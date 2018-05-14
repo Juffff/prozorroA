@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../server/errorHandler.js"],"names":["err"],"mappings":";;;;;;kBAAe,UAAUA,GAAV,EAAe;AAC1B;AACH,C","file":"errorHandler.js","sourcesContent":["export default function (err) {\n    //console.log(err);\n}"]}
