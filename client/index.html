@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+    <title>ProzorroAnalytics</title>
+</head>
+<body>
+<div class="container">
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Поиск...." id="searchInput">
+        <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="searchButton">Go!</button>
+      </span>
+    </div>
+    <table class="table table-striped table-bordered" id="tbl">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Заказчик</th>
+            <th>Бюджет</th>
+            <th>Название тендера</th>
+            <th>Статус</th>
+            <th>Дата аукциона</th>
+            <th>Участники</th>
+            <th>Победители</th>
+            <th>Валюта</th>
+            <th>НДС</th>
+            <th>Предметы закупки</th>
+            <th>Классификаторы</th>
+        </tr>
+        </thead>
+        <tbody id="tBody">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

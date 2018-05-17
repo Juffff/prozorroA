@@ -19,6 +19,7 @@
     "mongoose": "^4.11.0",
     "replaceall": "^0.1.6",
     "utf8": "^3.0.0",
+    "winston": "^2.4.2",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {

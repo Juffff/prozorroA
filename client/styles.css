@@ -1,0 +1,29 @@
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#tbl{
+    width: 100%;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+th {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;}
+
+.table > thead > tr{
+    background-color: black;
+    color: white;
+}
+
+.href{
+    cursor: pointer;
+    color: blue;
+}

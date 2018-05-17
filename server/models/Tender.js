@@ -14,7 +14,9 @@ const TenderSchema = new Schema({
     title: String,
     amount: String,
     currency: String,
-    valueAddedTaxIncluded: String
+    valueAddedTaxIncluded: String,
+    status: String,
+    suppliers: []
 });
 
 const Tender = mongoose.model('Tender', TenderSchema);

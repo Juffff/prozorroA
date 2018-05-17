@@ -20,7 +20,9 @@ var TenderSchema = new Schema({
     title: String,
     amount: String,
     currency: String,
-    valueAddedTaxIncluded: String
+    valueAddedTaxIncluded: String,
+    status: String,
+    suppliers: []
 });
 
 var Tender = _mongoose2.default.model('Tender', TenderSchema);
