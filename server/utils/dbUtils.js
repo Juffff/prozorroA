@@ -19,6 +19,7 @@ export function createTender(tender) {
             const newTender = new Tender;
             newTender._id = tender._id;
             newTender.name = tender.name;
+            newTender.datePublished = tender.datePublished;
             newTender.startDate = tender.startDate;
             newTender.awardCriteria = tender.awardCriteria;
             newTender.tenderers = tender.tenderers;
@@ -31,6 +32,8 @@ export function createTender(tender) {
             newTender.valueAddedTaxIncluded = tender.valueAddedTaxIncluded;
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
+            newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
+            newTender.history = {[new Date(Date.now()).toLocaleDateString().toString()] : 'Added to DB'};
             newTender.save(function (err, doc) {
                 if (err) {
                     errorHandler(err);
@@ -38,9 +41,17 @@ export function createTender(tender) {
                     console.log(doc);
                 }
             });
+        } else {
+            updateTender(data, tender);
         }
     });
 }
+
+export function updateTender(tender, data) {
+
+}
+
+
 
 export function listTenders(tenderFilter, callback) {
     Tender.find(tenderFilter).then(data => callback(data));
@@ -53,7 +64,7 @@ export function setNextURI(URI) {
             doc.save((err, doc) => {
                 if(err){
                     errorHandler(err);
-                } else console.log(doc);
+                }
             });
 
         } else {

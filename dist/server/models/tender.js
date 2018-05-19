@@ -12,6 +12,7 @@ var TenderSchema = new Schema({
     _id: String,
     name: String,
     startDate: String,
+    datePublished: String,
     awardCriteria: String,
     tenderers: [],
     items: [],
@@ -22,7 +23,9 @@ var TenderSchema = new Schema({
     currency: String,
     valueAddedTaxIncluded: String,
     status: String,
-    suppliers: []
+    suppliers: [],
+    created: String,
+    history: Schema.Types.Mixed
 });
 
 var Tender = _mongoose2.default.model('Tender', TenderSchema);

@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.connect = connect;
 exports.createTender = createTender;
+exports.updateTender = updateTender;
 exports.listTenders = listTenders;
 exports.setNextURI = setNextURI;
 exports.getNextURI = getNextURI;
@@ -27,6 +28,8 @@ var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Tender = _mongoose2.default.model('Tender');
 var NextURI = _mongoose2.default.model('NextURI');
 
@@ -41,6 +44,7 @@ function createTender(tender) {
             var newTender = new Tender();
             newTender._id = tender._id;
             newTender.name = tender.name;
+            newTender.datePublished = tender.datePublished;
             newTender.startDate = tender.startDate;
             newTender.awardCriteria = tender.awardCriteria;
             newTender.tenderers = tender.tenderers;
@@ -53,6 +57,8 @@ function createTender(tender) {
             newTender.valueAddedTaxIncluded = tender.valueAddedTaxIncluded;
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
+            newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
+            newTender.history = _defineProperty({}, new Date(Date.now()).toLocaleDateString().toString(), 'Added to DB');
             newTender.save(function (err, doc) {
                 if (err) {
                     (0, _errorHandler2.default)(err);
@@ -60,9 +66,13 @@ function createTender(tender) {
                     console.log(doc);
                 }
             });
+        } else {
+            updateTender(data, tender);
         }
     });
 }
+
+function updateTender(tender, data) {}
 
 function listTenders(tenderFilter, callback) {
     Tender.find(tenderFilter).then(function (data) {
@@ -77,7 +87,7 @@ function setNextURI(URI) {
             doc.save(function (err, doc) {
                 if (err) {
                     (0, _errorHandler2.default)(err);
-                } else console.log(doc);
+                }
             });
         } else {
             var uri = new NextURI();

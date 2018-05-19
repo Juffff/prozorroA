@@ -34,51 +34,66 @@ window.onload = function () {
         return el;
     };
 
+    var createUlTD = function createUlTD(data) {
+        if (Array.isArray(data)) {
+            var td = document.createElement('td');
+            var ul = document.createElement('ul');
+            data.forEach(function (el) {
+                var li = document.createElement('li');
+                li.innerHTML = el;
+                ul.appendChild(li);
+            });
+            td.appendChild(ul);
+            return td;
+        } else return createTd(data);
+    };
+
     var createTr = function createTr(data, tBody) {
         var tr = document.createElement('tr');
-
+        tr.style.cssText = 'background-color: ' + setColorOfTr(data.status);
         var className = 'default';
-
-        /* if(data.status === 'Завершена закупівля (завершена)'){
-             className = 'info';
-         }
-         if(data.status === 'Закупівля не відбулась (не відбулась)'){
-             className = 'warning';
-         }
-         if(data.status === 'Відмінена закупівля (відмінена)'){
-             className = 'danger';
-         }
-         if(data.status === 'Пропозиції розглянуто (розглянуто)'){
-             className = 'primary';
-         }*/
-
         tr.classList.add(className);
-        /*       const tdA = createTd();
-               const a = document.createElement('a');
-               a.setAttribute('href', `https://prozorro.gov.ua/tender/${data.tenderID}`);
-               a.innerHTML = data.tenderID;
-               tdA.appendChild(a);
-               tr.appendChild(tdA);*/
         tr.appendChild(createTd(data.tenderID, 'href', 'https://prozorro.gov.ua/tender/' + data.tenderID));
         tr.appendChild(createTd(data.name));
-        tr.appendChild(createTd(data.amount));
+        tr.appendChild(createTd(numeral(data.amount).format('0,0.00')));
         tr.appendChild(createTd(data.title));
         tr.appendChild(createTd(data.status));
+        if (data.datePublished) {
+            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString()));
+        } else {
+            tr.appendChild(createTd(''));
+        }
         if (data.startDate) {
             tr.appendChild(createTd(new Date(data.startDate).toLocaleDateString()));
         } else {
             tr.appendChild(createTd(''));
         }
-        tr.appendChild(createTd(data.tenderers.join('; ').toString()));
-        tr.appendChild(createTd(data.suppliers.join('; ').toString()));
+        tr.appendChild(createUlTD(data.tenderers));
+        tr.appendChild(createUlTD(data.suppliers));
         tr.appendChild(createTd(data.currency));
         tr.appendChild(createTd(data.valueAddedTaxIncluded ? 'С НДС' : 'Без НДС'));
-        tr.appendChild(createTd(data.items.join('; ').toString()));
-        tr.appendChild(createTd(data.classification_ids.join('; ').toString()));
-
+        tr.appendChild(createUlTD(data.items));
+        tr.appendChild(createUlTD(data.classification_ids));
         tBody.appendChild(tr);
     };
 };
+
+function setColorOfTr(status) {
+    var statueEnum = {
+        'Переговоры': 'lightgreen',
+        'Период уточнений': 'lightgreen',
+        'Ожидание предложений': 'lightgreen',
+        'Период аукциона': 'lightcyan',
+        'Квалификация победителя': 'lightcyan',
+        'Квалификация/Переквалификация': 'lightcyan',
+        'Преквалификация/Период оспариваний': 'lightcyan',
+        'Предложения рассмотрены': 'greenyellow',
+        'Закупка не произошла': 'lightpink',
+        'Закупка закончена': 'lightgrey',
+        'Закупка отменена': 'lightpink'
+    };
+    return statueEnum[status];
+}
 
 function openInNewTab(url) {
     var win = window.open(url, '_blank');

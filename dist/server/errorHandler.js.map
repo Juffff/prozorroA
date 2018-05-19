@@ -1,1 +1,1 @@
-{"version":3,"sources":["../../server/errorHandler.js"],"names":["err"],"mappings":";;;;;;kBAAe,UAAUA,GAAV,EAAe;AAC1B;AACH,C","file":"errorHandler.js","sourcesContent":["export default function (err) {\n    //console.log(err);\n}"]}
+{"version":3,"sources":["../../server/errorHandler.js"],"names":["err","logger","log"],"mappings":";;;;;;kBACe,UAAUA,GAAV,EAAe;AAC1BC,qBAAOC,GAAP,CAAW,OAAX,EAAoBF,GAApB;AACH,C;;AAHD","file":"errorHandler.js","sourcesContent":["import logger from './utils/logger';\nexport default function (err) {\n    logger.log('error', err);\n}"]}

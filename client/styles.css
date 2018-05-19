@@ -3,6 +3,7 @@
     justify-content: center;
     width: 100%;
     flex-wrap: wrap;
+    overflow-y: scroll;
 }
 
 #tbl{
@@ -26,4 +27,9 @@ th {
 .href{
     cursor: pointer;
     color: blue;
+}
+
+ul{
+    padding: 2px;
+    list-style-type: none;
 }

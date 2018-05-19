@@ -1,3 +1,4 @@
+import logger from './utils/logger';
 export default function (err) {
-    //console.log(err);
+    logger.log('error', err);
 }

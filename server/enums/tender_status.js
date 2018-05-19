@@ -1,4 +1,20 @@
 export default {
+    'active' :                              'Переговоры',
+    'active.enquiries':                     'Период уточнений',
+    'active.tendering':                     'Ожидание предложений',
+    'active.auction':                       'Период аукциона',
+    'active.qualification':                 'Квалификация победителя',
+    'active.pre-qualification':             'Квалификация/Переквалификация',
+    'active.pre-qualification.stand-still': 'Преквалификация/Период оспариваний',
+    'active.awarded':                       'Предложения рассмотрены',
+    'unsuccessful':                         'Закупка не произошла',
+    'complete':                             'Закупка закончена',
+    'cancelled':                            'Закупка отменена'
+};
+
+/*
+export default {
+    'active' : 'Переговорна процедура',
     'active.enquiries': 'Період уточнень (уточнення)',
     'active.tendering': 'Очікування пропозицій (пропозиції)',
     'active.auction': 'Період аукціону (аукціон)',
@@ -9,4 +25,4 @@ export default {
     'unsuccessful': 'Закупівля не відбулась (не відбулась)',
     'complete': 'Завершена закупівля (завершена)',
     'cancelled': 'Відмінена закупівля (відмінена)'
-};
+};*/
