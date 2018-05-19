@@ -2,23 +2,35 @@ window.onload = () => {
 
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
+    const clearSearchInput = document.getElementById('clearSearchButton');
 
     searchButton.onclick = function () {
         document.getElementById('tBody').innerHTML = '';
+        listReq(searchInput.value);
+    };
+
+    clearSearchInput.onclick = function () {
+        searchInput.value = '';
+        document.getElementById('tBody').innerHTML = '';
+        listReq('');
+    };
+
+    function listReq(search) {
         const server = 'http://localhost:8080/';
         fetch(server)
             .then(response => response.json())
             .then(json => {
                     const tBody = document.getElementById('tBody');
                     json.forEach(el => {
-                        if (Object.values(el).join('').toLowerCase().indexOf(searchInput.value.toLowerCase()) !== -1) {
+                        if (Object.values(el).join('').toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                             createTr(el, tBody);
                         }
                     });
                 }
             )
             .catch(console.log);
-    };
+    }
+
 
     const createTd = (data, className, link) => {
         const el = document.createElement('td');
@@ -29,16 +41,26 @@ window.onload = () => {
             el.addEventListener('click', () => openInNewTab(link));
         }
         if (!data) el.innerHTML = ''; else el.innerHTML = data;
+        el.ondblclick = function () {
+            searchInput.value = el.innerHTML;
+            document.getElementById('tBody').innerHTML = '';
+            listReq(searchInput.value);
+        };
         return el;
     };
 
     const createUlTD = (data) => {
-        if(Array.isArray(data)){
+        if (Array.isArray(data)) {
             const td = document.createElement('td');
             const ul = document.createElement('ul');
             data.forEach(el => {
                 const li = document.createElement('li');
                 li.innerHTML = el;
+                li.ondblclick = function () {
+                    searchInput.value = li.innerHTML;
+                    document.getElementById('tBody').innerHTML = '';
+                    listReq(searchInput.value);
+                };
                 ul.appendChild(li);
             });
             td.appendChild(ul);

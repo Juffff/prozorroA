@@ -167,6 +167,9 @@ function analiseToTender(prefix, id, uri) {
                                         }
                                         tender.suppliers = suppliers;
                                     }
+                                    if(!tender.tenderers && tender.suppliers){
+                                        tender.tenderers = tender.suppliers;
+                                    }
                                     let a = false;
                                     if (tender.classification_ids) {
                                         if (Array.isArray(tender.classification_ids)) {
