@@ -3,11 +3,13 @@ window.onload = () => {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const clearSearchInput = document.getElementById('clearSearchButton');
-    const exportToExcelButton = document.getElementById('exportToExcelButton');
 
-    exportToExcelButton.onclick = function () {
-        $("table").tableExport();
-    };
+    $("#btnExport").click(function (e) {
+        $(this).attr({
+            'download': `ProzorroAnalytics_${new Date().toLocaleDateString()}_${new Date().toLocaleTimeString()}.xls`,
+            'href': 'data:application/csv;charset=utf-8,' + encodeURIComponent($('#dvData').html())
+        })
+    });
 
     searchInput.addEventListener("keyup", function (event) {
         event.preventDefault();
@@ -32,9 +34,9 @@ window.onload = () => {
         fetch(server)
             .then(response => response.json())
             .then(json => {
-                if(typeof sort === 'function'){
+                if (typeof sort === 'function') {
                     return sort(json);
-                } else  return sortByDatePublished(json);
+                } else return sortByDatePublished(json);
             })
             .then(json => {
                     const tBody = document.getElementById('tBody');
@@ -76,7 +78,7 @@ window.onload = () => {
         if (link) {
             el.addEventListener('click', () => openInNewTab(link));
         }
-        if(cssText){
+        if (cssText) {
             el.style.cssText = cssText;
         }
         if (!data) el.innerHTML = ''; else el.innerHTML = data;
@@ -88,9 +90,10 @@ window.onload = () => {
         return el;
     };
 
-    const createUlTD = (data) => {
+    const createUlTD = (data, cssText) => {
         if (Array.isArray(data)) {
             const td = document.createElement('td');
+            td.style.cssText = cssText;
             const ul = document.createElement('ul');
             data.forEach(el => {
                 const li = document.createElement('li');
@@ -104,35 +107,34 @@ window.onload = () => {
             });
             td.appendChild(ul);
             return td;
-        } else return createTd(data);
+        } else return createTd(data, false, false, `background-color: ${setColorOfTr(data.status)}`);
 
     };
 
     const createTr = (data, tBody) => {
         const tr = document.createElement('tr');
-        tr.style.cssText = `background-color: ${setColorOfTr(data.status)}`;
         let className = 'default';
         tr.classList.add(className);
-        tr.appendChild(createTd(data.tenderID, 'href', `https://prozorro.gov.ua/tender/${data.tenderID}`));
-        tr.appendChild(createTd(data.name));
-        tr.appendChild(createTd(Number.parseInt(data.amount, 0).toString().replace(/(\d{1,3})(?=((\d{3})*([^\d]|$)))/g, " $1 ").replace('.', ',').replace(' ,', ',').replace(', ', ','),false,false,'text-align: end;'));
-        tr.appendChild(createTd(data.title));
-        tr.appendChild(createTd(data.status));
+        tr.appendChild(createTd(data.tenderID, 'href', `https://prozorro.gov.ua/tender/${data.tenderID}`, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createTd(data.name, false, false, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createTd(Number.parseInt(data.amount, 0).toString().replace(/(\d{1,3})(?=((\d{3})*([^\d]|$)))/g, " $1 ").replace('.', ',').replace(' ,', ',').replace(', ', ','), false, false, `text-align: end; background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createTd(data.title, false, false, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createTd(data.status, false, false, `background-color: ${setColorOfTr(data.status)}`));
         if (data.datePublished) {
-            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString(),false,false,'text-align: center'));
+            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString(), false, false, `text-align: center; background-color: ${setColorOfTr(data.status)}`));
         } else {
-            tr.appendChild(createTd(''));
+            tr.appendChild(createTd('', false, false, `background-color: ${setColorOfTr(data.status)}`));
         }
         if (data.startDate) {
-            tr.appendChild(createTd(new Date(data.startDate).toLocaleDateString()));
+            tr.appendChild(createTd(new Date(data.startDate).toLocaleDateString(), false, false, `background-color: ${setColorOfTr(data.status)}`));
         } else {
-            tr.appendChild(createTd(''));
+            tr.appendChild(createTd('', false, false, `background-color: ${setColorOfTr(data.status)}`));
         }
-        tr.appendChild(createUlTD(data.tenderers));
-        tr.appendChild(createUlTD(data.suppliers));
-        tr.appendChild(createTd(data.currency,false,false,'text-align: center;'));
-        tr.appendChild(createUlTD(data.items));
-        tr.appendChild(createUlTD(data.classification_ids));
+        tr.appendChild(createUlTD(data.tenderers, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createUlTD(data.suppliers, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createTd(data.currency, false, false, `text-align: center; background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createUlTD(data.items, `background-color: ${setColorOfTr(data.status)}`));
+        tr.appendChild(createUlTD(data.classification_ids, `background-color: ${setColorOfTr(data.status)}`));
         tBody.appendChild(tr);
     };
 
@@ -148,7 +150,7 @@ function setColorOfTr(status) {
         'Квалификация/Переквалификация': 'lightcyan',
         'Преквалификация/Период оспариваний': 'lightcyan',
         'Предложения рассмотрены': 'greenyellow',
-        'Закупка не произошла': 'lightpink',
+        'Закупка не состоялась': 'lightpink',
         'Закупка закончена': 'lightgrey',
         'Закупка отменена': 'lightpink'
     };

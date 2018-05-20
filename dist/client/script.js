@@ -5,11 +5,13 @@ window.onload = function () {
     var searchButton = document.getElementById('searchButton');
     var searchInput = document.getElementById('searchInput');
     var clearSearchInput = document.getElementById('clearSearchButton');
-    var exportToExcelButton = document.getElementById('exportToExcelButton');
 
-    exportToExcelButton.onclick = function () {
-        $("table").tableExport();
-    };
+    $("#btnExport").click(function (e) {
+        $(this).attr({
+            'download': 'ProzorroAnalytics_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString() + '.xls',
+            'href': 'data:application/csv;charset=utf-8,' + encodeURIComponent($('#dvData').html())
+        });
+    });
 
     searchInput.addEventListener("keyup", function (event) {
         event.preventDefault();
@@ -89,9 +91,10 @@ window.onload = function () {
         return el;
     };
 
-    var createUlTD = function createUlTD(data) {
+    var createUlTD = function createUlTD(data, cssText) {
         if (Array.isArray(data)) {
             var td = document.createElement('td');
+            td.style.cssText = cssText;
             var ul = document.createElement('ul');
             data.forEach(function (el) {
                 var li = document.createElement('li');
@@ -105,34 +108,33 @@ window.onload = function () {
             });
             td.appendChild(ul);
             return td;
-        } else return createTd(data);
+        } else return createTd(data, false, false, 'background-color: ' + setColorOfTr(data.status));
     };
 
     var createTr = function createTr(data, tBody) {
         var tr = document.createElement('tr');
-        tr.style.cssText = 'background-color: ' + setColorOfTr(data.status);
         var className = 'default';
         tr.classList.add(className);
-        tr.appendChild(createTd(data.tenderID, 'href', 'https://prozorro.gov.ua/tender/' + data.tenderID));
-        tr.appendChild(createTd(data.name));
-        tr.appendChild(createTd(Number.parseInt(data.amount, 0).toString().replace(/(\d{1,3})(?=((\d{3})*([^\d]|$)))/g, " $1 ").replace('.', ',').replace(' ,', ',').replace(', ', ','), false, false, 'text-align: end;'));
-        tr.appendChild(createTd(data.title));
-        tr.appendChild(createTd(data.status));
+        tr.appendChild(createTd(data.tenderID, 'href', 'https://prozorro.gov.ua/tender/' + data.tenderID, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createTd(data.name, false, false, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createTd(Number.parseInt(data.amount, 0).toString().replace(/(\d{1,3})(?=((\d{3})*([^\d]|$)))/g, " $1 ").replace('.', ',').replace(' ,', ',').replace(', ', ','), false, false, 'text-align: end; background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createTd(data.title, false, false, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createTd(data.status, false, false, 'background-color: ' + setColorOfTr(data.status)));
         if (data.datePublished) {
-            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString(), false, false, 'text-align: center'));
+            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString(), false, false, 'text-align: center; background-color: ' + setColorOfTr(data.status)));
         } else {
-            tr.appendChild(createTd(''));
+            tr.appendChild(createTd('', false, false, 'background-color: ' + setColorOfTr(data.status)));
         }
         if (data.startDate) {
-            tr.appendChild(createTd(new Date(data.startDate).toLocaleDateString()));
+            tr.appendChild(createTd(new Date(data.startDate).toLocaleDateString(), false, false, 'background-color: ' + setColorOfTr(data.status)));
         } else {
-            tr.appendChild(createTd(''));
+            tr.appendChild(createTd('', false, false, 'background-color: ' + setColorOfTr(data.status)));
         }
-        tr.appendChild(createUlTD(data.tenderers));
-        tr.appendChild(createUlTD(data.suppliers));
-        tr.appendChild(createTd(data.currency, false, false, 'text-align: center;'));
-        tr.appendChild(createUlTD(data.items));
-        tr.appendChild(createUlTD(data.classification_ids));
+        tr.appendChild(createUlTD(data.tenderers, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createUlTD(data.suppliers, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createTd(data.currency, false, false, 'text-align: center; background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createUlTD(data.items, 'background-color: ' + setColorOfTr(data.status)));
+        tr.appendChild(createUlTD(data.classification_ids, 'background-color: ' + setColorOfTr(data.status)));
         tBody.appendChild(tr);
     };
 };
@@ -147,7 +149,7 @@ function setColorOfTr(status) {
         'Квалификация/Переквалификация': 'lightcyan',
         'Преквалификация/Период оспариваний': 'lightcyan',
         'Предложения рассмотрены': 'greenyellow',
-        'Закупка не произошла': 'lightpink',
+        'Закупка не состоялась': 'lightpink',
         'Закупка закончена': 'lightgrey',
         'Закупка отменена': 'lightpink'
     };

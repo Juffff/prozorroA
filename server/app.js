@@ -29,6 +29,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
+var d = new Date();
+
 let startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-01-01';
 const apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
 
@@ -59,19 +61,48 @@ app.get('/', (req, res) => {
                 goThrowTenders(startUri);
             }
         });
+        setTimeout(function () {
+            console.log('Wake and move!');
+            db.getNextURI(function (uri) {
+                if (uri) {
+                    goThrowTenders(uri);
+                } else {
+                    goThrowTenders(startUri);
+                }
+            });
+        }, 60000);
 
         res.sendStatus(200);
     });
 
 function goThrowTenders(uri) {
     console.log(uri);
+    let milliseconds = null;
+
     const https = require('https');
     https.get(uri, function (res) {
+        milliseconds = new Date().getTime();
         let str = '';
         res.on('data', function (chunk) {
             str += chunk;
         });
         res.on('end', function () {
+            /*let timeOut = setTimeout(function () {
+                if(new Date().getTime() - milliseconds > 30000){
+                    console.log(new Date().getTime() - milliseconds);
+                    console.log('Wake and go!');
+                    logger.log('info', 'Wake and go!');
+                    db.getNextURI(function (uri) {
+                        if (uri) {
+                            goThrowTenders(uri);
+                            clearTimeout(timeOut);
+                        } else {
+                            goThrowTenders(startUri);
+                            clearTimeout(timeOut);
+                        }
+                    });
+                };
+            }, 30000);*/
             const resJson = JSON.parse(str);
             const nextUri = resJson.next_page.uri;
             const data = resJson.data;

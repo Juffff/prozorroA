@@ -60,6 +60,8 @@ var app = (0, _express2.default)();
 app.use(_bodyParser2.default.json());
 app.use((0, _cors2.default)(corsOptions));
 
+var d = new Date();
+
 var startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-01-01';
 var apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
 
@@ -89,19 +91,48 @@ app.get('/', function (req, res) {
             goThrowTenders(startUri);
         }
     });
+    setTimeout(function () {
+        console.log('Wake and move!');
+        db.getNextURI(function (uri) {
+            if (uri) {
+                goThrowTenders(uri);
+            } else {
+                goThrowTenders(startUri);
+            }
+        });
+    }, 60000);
 
     res.sendStatus(200);
 });
 
 function goThrowTenders(uri) {
     console.log(uri);
+    var milliseconds = null;
+
     var https = require('https');
     https.get(uri, function (res) {
+        milliseconds = new Date().getTime();
         var str = '';
         res.on('data', function (chunk) {
             str += chunk;
         });
         res.on('end', function () {
+            /*let timeOut = setTimeout(function () {
+                if(new Date().getTime() - milliseconds > 30000){
+                    console.log(new Date().getTime() - milliseconds);
+                    console.log('Wake and go!');
+                    logger.log('info', 'Wake and go!');
+                    db.getNextURI(function (uri) {
+                        if (uri) {
+                            goThrowTenders(uri);
+                            clearTimeout(timeOut);
+                        } else {
+                            goThrowTenders(startUri);
+                            clearTimeout(timeOut);
+                        }
+                    });
+                };
+            }, 30000);*/
             var resJson = JSON.parse(str);
             var nextUri = resJson.next_page.uri;
             var data = resJson.data;
