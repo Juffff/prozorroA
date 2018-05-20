@@ -21,7 +21,6 @@ var TenderSchema = new Schema({
     title: String,
     amount: String,
     currency: String,
-    valueAddedTaxIncluded: String,
     status: String,
     suppliers: [],
     created: String,

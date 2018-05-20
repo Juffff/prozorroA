@@ -5,10 +5,22 @@ window.onload = function () {
     var searchButton = document.getElementById('searchButton');
     var searchInput = document.getElementById('searchInput');
     var clearSearchInput = document.getElementById('clearSearchButton');
+    var exportToExcelButton = document.getElementById('exportToExcelButton');
+
+    exportToExcelButton.onclick = function () {
+        $("table").tableExport();
+    };
+
+    searchInput.addEventListener("keyup", function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            searchButton.click();
+        }
+    });
 
     searchButton.onclick = function () {
         document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value);
+        listReq(searchInput.value, sortByDatePublished);
     };
 
     clearSearchInput.onclick = function () {
@@ -17,10 +29,14 @@ window.onload = function () {
         listReq('');
     };
 
-    function listReq(search) {
+    function listReq(search, sort) {
         var server = 'http://localhost:8080/';
         fetch(server).then(function (response) {
             return response.json();
+        }).then(function (json) {
+            if (typeof sort === 'function') {
+                return sort(json);
+            } else return sortByDatePublished(json);
         }).then(function (json) {
             var tBody = document.getElementById('tBody');
             json.forEach(function (el) {
@@ -31,7 +47,27 @@ window.onload = function () {
         }).catch(console.log);
     }
 
-    var createTd = function createTd(data, className, link) {
+    function sortByDatePublished(data) {
+        var dataToBeSorted = data.map(function (el) {
+            if (el.datePublished === undefined) {
+                el.datePublished = null;
+                return el;
+            } else return el;
+        });
+        return dataToBeSorted.sort(function (a, b) {
+            var data1 = new Date(a.datePublished);
+            var data2 = new Date(b.datePublished);
+            if (data1 < data2) {
+                return 1;
+            }
+            if (data1 > data2) {
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+    var createTd = function createTd(data, className, link, cssText) {
         var el = document.createElement('td');
         if (className) {
             el.classList.add(className);
@@ -40,6 +76,9 @@ window.onload = function () {
             el.addEventListener('click', function () {
                 return openInNewTab(link);
             });
+        }
+        if (cssText) {
+            el.style.cssText = cssText;
         }
         if (!data) el.innerHTML = '';else el.innerHTML = data;
         el.ondblclick = function () {
@@ -76,11 +115,11 @@ window.onload = function () {
         tr.classList.add(className);
         tr.appendChild(createTd(data.tenderID, 'href', 'https://prozorro.gov.ua/tender/' + data.tenderID));
         tr.appendChild(createTd(data.name));
-        tr.appendChild(createTd(numeral(data.amount).format('0,0.00')));
+        tr.appendChild(createTd(Number.parseInt(data.amount, 0).toString().replace(/(\d{1,3})(?=((\d{3})*([^\d]|$)))/g, " $1 ").replace('.', ',').replace(' ,', ',').replace(', ', ','), false, false, 'text-align: end;'));
         tr.appendChild(createTd(data.title));
         tr.appendChild(createTd(data.status));
         if (data.datePublished) {
-            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString()));
+            tr.appendChild(createTd(new Date(data.datePublished).toLocaleDateString(), false, false, 'text-align: center'));
         } else {
             tr.appendChild(createTd(''));
         }
@@ -91,8 +130,7 @@ window.onload = function () {
         }
         tr.appendChild(createUlTD(data.tenderers));
         tr.appendChild(createUlTD(data.suppliers));
-        tr.appendChild(createTd(data.currency));
-        tr.appendChild(createTd(data.valueAddedTaxIncluded ? 'С НДС' : 'Без НДС'));
+        tr.appendChild(createTd(data.currency, false, false, 'text-align: center;'));
         tr.appendChild(createUlTD(data.items));
         tr.appendChild(createUlTD(data.classification_ids));
         tBody.appendChild(tr);

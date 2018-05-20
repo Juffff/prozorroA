@@ -54,7 +54,6 @@ function createTender(tender) {
             newTender.title = tender.title;
             newTender.amount = tender.amount;
             newTender.currency = tender.currency;
-            newTender.valueAddedTaxIncluded = tender.valueAddedTaxIncluded;
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();

@@ -29,7 +29,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
-let startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-01';
+let startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-01-01';
 const apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
 
 process.on('uncaughtException', function (err) {
@@ -75,8 +75,10 @@ function goThrowTenders(uri) {
             const resJson = JSON.parse(str);
             const nextUri = resJson.next_page.uri;
             const data = resJson.data;
+            console.log(data.length);
             if (data.length === 0) {
                 logger.log('info', 'goThrowTenders finished');
+                console.log('Go throw tenders finished.');
                 db.setNextURI(startUri);
             } else {
                 resJson.data.map(data => data.id).forEach(id => {
@@ -107,6 +109,15 @@ function analiseToTender(prefix, id, uri) {
                                     tender.name = allInfo.procuringEntity.name;
                                     if (allInfo.auctionPeriod) {
                                         tender.startDate = allInfo.auctionPeriod.startDate;
+                                        if(tender.startDate === undefined){
+                                            if(allInfo.documents){
+                                                if(Array.isArray(allInfo.documents)){
+                                                    if(allInfo.documents[0]){
+                                                        tender.startDate = allInfo.documents[0].datePublished;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                     if(allInfo.enquiryPeriod){
                                         tender.datePublished = allInfo.enquiryPeriod.invalidationDate;
@@ -146,7 +157,6 @@ function analiseToTender(prefix, id, uri) {
                                     tender.tenderID = allInfo.tenderID;
                                     tender.title = allInfo.title;
                                     tender.currency = allInfo.value.currency;
-                                    tender.valueAddedTaxIncluded = allInfo.value.valueAddedTaxIncluded;
                                     tender.status = tenderStatusEnum[allInfo.status];
                                     if (tender.status === tenderStatusEnum['complete'] || tender.status === tenderStatusEnum['active.awarded']) {
                                         let suppliers = [];
@@ -181,7 +191,7 @@ function analiseToTender(prefix, id, uri) {
                                         }
                                     }
                                     if (a === true) {
-                                        logger.log('info', tender);
+                                        logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
                                         console.log(uri);
                                         console.log(tender);
                                         db.createTender(tender);

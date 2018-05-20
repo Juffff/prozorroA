@@ -14,10 +14,6 @@
     vertical-align: middle;
 }
 
-th {
-    text-align: center;
-    display: table-cell;
-    vertical-align: middle;}
 
 .table > thead > tr{
     background-color: black;
@@ -32,4 +28,15 @@ th {
 ul{
     padding: 2px;
     list-style-type: none;
+}
+.btn{
+    background-color: blue;
+    color: snow;
+}
+
+.table>thead>tr>th
+{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }

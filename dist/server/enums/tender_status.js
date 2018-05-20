@@ -12,7 +12,7 @@ exports.default = {
     'active.pre-qualification': 'Квалификация/Переквалификация',
     'active.pre-qualification.stand-still': 'Преквалификация/Период оспариваний',
     'active.awarded': 'Предложения рассмотрены',
-    'unsuccessful': 'Закупка не произошла',
+    'unsuccessful': 'Закупка не состоялась',
     'complete': 'Закупка закончена',
     'cancelled': 'Закупка отменена'
 };
