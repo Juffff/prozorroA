@@ -5,6 +5,8 @@ window.onload = function () {
     var searchButton = document.getElementById('searchButton');
     var searchInput = document.getElementById('searchInput');
     var clearSearchInput = document.getElementById('clearSearchButton');
+    var amountTh = document.getElementById('amountTh');
+    var pDate = document.getElementById('pDate');
 
     $("#btnExport").click(function (e) {
         $(this).attr({
@@ -22,13 +24,23 @@ window.onload = function () {
 
     searchButton.onclick = function () {
         document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value, sortByDatePublished);
+        listReq(searchInput.value, sortByAmount);
     };
+
+    amountTh.addEventListener('click', function () {
+        document.getElementById('tBody').innerHTML = '';
+        listReq(searchInput.value, sortByAmount);
+    });
+
+    pDate.addEventListener('click', function () {
+        document.getElementById('tBody').innerHTML = '';
+        listReq(searchInput.value, sortByDatePublished);
+    });
 
     clearSearchInput.onclick = function () {
         searchInput.value = '';
         document.getElementById('tBody').innerHTML = '';
-        listReq('');
+        listReq('', sortByAmount);
     };
 
     function listReq(search, sort) {
@@ -38,7 +50,7 @@ window.onload = function () {
         }).then(function (json) {
             if (typeof sort === 'function') {
                 return sort(json);
-            } else return sortByDatePublished(json);
+            } else return sortByAmount(json);
         }).then(function (json) {
             var tBody = document.getElementById('tBody');
             json.forEach(function (el) {
@@ -59,6 +71,21 @@ window.onload = function () {
         return dataToBeSorted.sort(function (a, b) {
             var data1 = new Date(a.datePublished);
             var data2 = new Date(b.datePublished);
+            if (data1 < data2) {
+                return 1;
+            }
+            if (data1 > data2) {
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+    function sortByAmount(data) {
+        var dataToBeSorted = data;
+        return dataToBeSorted.sort(function (a, b) {
+            var data1 = Number.parseInt(a.amount);
+            var data2 = Number.parseInt(b.amount);
             if (data1 < data2) {
                 return 1;
             }

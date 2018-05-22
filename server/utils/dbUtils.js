@@ -3,6 +3,7 @@ import config from '../config/config.js';
 import '../models/Tender';
 import '../models/NextURI';
 import errorHandler from '../errorHandler';
+import compareTenders from './tendersComparator';
 
 const Tender = mongoose.model('Tender');
 const NextURI = mongoose.model('NextURI');
@@ -16,6 +17,7 @@ export function connect() {
 export function createTender(tender) {
     Tender.find({_id: tender._id}).then(data => {
         if (data.length === 0) {
+            console.log('NEW');
             const newTender = new Tender;
             newTender._id = tender._id;
             newTender.name = tender.name;
@@ -37,17 +39,18 @@ export function createTender(tender) {
                 if (err) {
                     errorHandler(err);
                 } else {
-                    console.log(doc);
+                   // console.log(doc);
                 }
             });
         } else {
-            updateTender(data, tender);
+            updateTender(data[0], tender);
         }
     });
 }
 
-export function updateTender(tender, data) {
-
+function updateTender(oldTender, newTender) {
+    console.log('UPDATE!');
+    console.log(compareTenders(oldTender, newTender));
 }
 
 

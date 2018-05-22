@@ -62,7 +62,7 @@ app.use((0, _cors2.default)(corsOptions));
 
 var d = new Date();
 
-var startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-01-01';
+var startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-17T13%3A26%3A33.231516%2B03%3A00';
 var apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
 
 process.on('uncaughtException', function (err) {
@@ -71,7 +71,8 @@ process.on('uncaughtException', function (err) {
     console.log("Node NOT Exiting...");
     db.getNextURI(function (uri) {
         if (uri) {
-            goThrowTenders(uri);
+            //  goThrowTenders(uri);
+            goThrowTenders(startUri);
         } else {
             goThrowTenders(startUri);
         }
@@ -86,7 +87,7 @@ app.get('/', function (req, res) {
     console.log('Start');
     db.getNextURI(function (uri) {
         if (uri) {
-            goThrowTenders(uri);
+            goThrowTenders(startUri);
         } else {
             goThrowTenders(startUri);
         }
@@ -256,7 +257,7 @@ function analiseToTender(prefix, id, uri) {
                                     if (a === true) {
                                         _logger2.default.log('info', 'a tender was found - ' + JSON.stringify(tender));
                                         console.log(uri);
-                                        console.log(tender);
+                                        /*       console.log(tender);*/
                                         db.createTender(tender);
                                         a = false;
                                     }

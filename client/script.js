@@ -3,6 +3,8 @@ window.onload = () => {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const clearSearchInput = document.getElementById('clearSearchButton');
+    const amountTh = document.getElementById('amountTh');
+    const pDate = document.getElementById('pDate');
 
     $("#btnExport").click(function (e) {
         $(this).attr({
@@ -20,13 +22,23 @@ window.onload = () => {
 
     searchButton.onclick = function () {
         document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value, sortByDatePublished);
+        listReq(searchInput.value, sortByAmount);
     };
+
+    amountTh.addEventListener('click', function(){
+        document.getElementById('tBody').innerHTML = '';
+        listReq(searchInput.value, sortByAmount);
+    });
+
+    pDate.addEventListener('click', function(){
+        document.getElementById('tBody').innerHTML = '';
+        listReq(searchInput.value, sortByDatePublished);
+    });
 
     clearSearchInput.onclick = function () {
         searchInput.value = '';
         document.getElementById('tBody').innerHTML = '';
-        listReq('');
+        listReq('', sortByAmount);
     };
 
     function listReq(search, sort) {
@@ -36,7 +48,7 @@ window.onload = () => {
             .then(json => {
                 if (typeof sort === 'function') {
                     return sort(json);
-                } else return sortByDatePublished(json);
+                } else return sortByAmount(json);
             })
             .then(json => {
                     const tBody = document.getElementById('tBody');
@@ -69,6 +81,24 @@ window.onload = () => {
             return 0;
         });
     }
+
+    function sortByAmount(data) {
+        const dataToBeSorted = data;
+        return dataToBeSorted.sort((a, b) => {
+            const data1 = Number.parseInt(a.amount);
+            const data2 = Number.parseInt(b.amount);
+            if (data1 < data2) {
+                return 1;
+            }
+            if (data1 > data2) {
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+
+
 
     const createTd = (data, className, link, cssText) => {
         const el = document.createElement('td');

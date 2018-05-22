@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.connect = connect;
 exports.createTender = createTender;
-exports.updateTender = updateTender;
 exports.listTenders = listTenders;
 exports.setNextURI = setNextURI;
 exports.getNextURI = getNextURI;
@@ -26,6 +25,10 @@ var _errorHandler = require('../errorHandler');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
+var _tendersComparator = require('./tendersComparator');
+
+var _tendersComparator2 = _interopRequireDefault(_tendersComparator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -41,6 +44,7 @@ function connect() {
 function createTender(tender) {
     Tender.find({ _id: tender._id }).then(function (data) {
         if (data.length === 0) {
+            console.log('NEW');
             var newTender = new Tender();
             newTender._id = tender._id;
             newTender.name = tender.name;
@@ -62,16 +66,19 @@ function createTender(tender) {
                 if (err) {
                     (0, _errorHandler2.default)(err);
                 } else {
-                    console.log(doc);
+                    // console.log(doc);
                 }
             });
         } else {
-            updateTender(data, tender);
+            updateTender(data[0], tender);
         }
     });
 }
 
-function updateTender(tender, data) {}
+function updateTender(oldTender, newTender) {
+    console.log('UPDATE!');
+    console.log((0, _tendersComparator2.default)(oldTender, newTender));
+}
 
 function listTenders(tenderFilter, callback) {
     Tender.find(tenderFilter).then(function (data) {
