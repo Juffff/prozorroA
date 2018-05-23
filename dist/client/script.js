@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 window.onload = function () {
 
     var searchButton = document.getElementById('searchButton');
@@ -162,6 +164,12 @@ window.onload = function () {
         tr.appendChild(createTd(data.currency, false, false, 'text-align: center; background-color: ' + setColorOfTr(data.status)));
         tr.appendChild(createUlTD(data.items, 'background-color: ' + setColorOfTr(data.status)));
         tr.appendChild(createUlTD(data.classification_ids, 'background-color: ' + setColorOfTr(data.status)));
+        var historyList = Object.keys(data.history).map(function (el) {
+            if (_typeof(data.history[el]) === 'object') {
+                return el + ' : ' + Object.values(data.history[el]);
+            } else return el + ' : ' + data.history[el];
+        });
+        tr.appendChild(createUlTD(historyList, 'background-color: ' + setColorOfTr(data.status)));
         tBody.appendChild(tr);
     };
 };

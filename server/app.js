@@ -29,7 +29,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
-var d = new Date();
 
 let startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-17T13%3A26%3A33.231516%2B03%3A00';
 const apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';

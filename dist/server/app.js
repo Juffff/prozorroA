@@ -60,8 +60,6 @@ var app = (0, _express2.default)();
 app.use(_bodyParser2.default.json());
 app.use((0, _cors2.default)(corsOptions));
 
-var d = new Date();
-
 var startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-17T13%3A26%3A33.231516%2B03%3A00';
 var apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
 

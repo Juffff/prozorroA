@@ -165,6 +165,12 @@ window.onload = () => {
         tr.appendChild(createTd(data.currency, false, false, `text-align: center; background-color: ${setColorOfTr(data.status)}`));
         tr.appendChild(createUlTD(data.items, `background-color: ${setColorOfTr(data.status)}`));
         tr.appendChild(createUlTD(data.classification_ids, `background-color: ${setColorOfTr(data.status)}`));
+        const historyList = Object.keys(data.history).map(el => {
+            if(typeof data.history[el] === 'object'){
+                return`${el} : ${Object.values(data.history[el])}`
+            } else return `${el} : ${data.history[el]}`;
+        });
+        tr.appendChild(createUlTD(historyList, `background-color: ${setColorOfTr(data.status)}`));
         tBody.appendChild(tr);
     };
 

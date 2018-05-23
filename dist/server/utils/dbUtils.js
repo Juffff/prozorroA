@@ -64,7 +64,7 @@ function createTender(tender) {
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
             if (!tender.history) {
-                newTender.history = _defineProperty({}, new Date(Date.now()).toLocaleDateString().toString(), 'Added to DB');
+                newTender.history = _defineProperty({}, new Date(Date.now()).toLocaleDateString().toString(), 'Добавлен в базу');
             } else newTender.history = tender.history;
             newTender.save(function (err, doc) {
                 if (err) {
