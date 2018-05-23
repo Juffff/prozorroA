@@ -12,12 +12,13 @@ const NextURI = mongoose.model('NextURI');
 export function connect() {
     const db = config.db;
     mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`);
+    mongoose.set('debug', true);
+
 }
 
 export function createTender(tender) {
     Tender.find({_id: tender._id}).then(data => {
         if (data.length === 0) {
-            console.log('NEW');
             const newTender = new Tender;
             newTender._id = tender._id;
             newTender.name = tender.name;
@@ -34,26 +35,80 @@ export function createTender(tender) {
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
-            newTender.history = {[new Date(Date.now()).toLocaleDateString().toString()] : 'Added to DB'};
+            if (!tender.history) {
+                newTender.history = {[new Date(Date.now()).toLocaleDateString().toString()]: 'Added to DB'};
+            } else newTender.history = tender.history;
             newTender.save(function (err, doc) {
                 if (err) {
                     errorHandler(err);
                 } else {
-                   // console.log(doc);
+                    // console.log(doc);
                 }
             });
         } else {
-            updateTender(data[0], tender);
+            Tender.findOne({_id: tender._id}, function (err, doc) {
+                const newTender = updateTender(data[0], tender);
+                doc._id = newTender._id;
+                doc.name = newTender.name;
+                doc.datePublished = newTender.datePublished;
+                doc.startDate = newTender.startDate;
+                doc.awardCriteria = newTender.awardCriteria;
+                doc.tenderers = newTender.tenderers;
+                doc.items = newTender.items;
+                doc.classification_ids = newTender.classification_ids;
+                doc.tenderID = newTender.tenderID;
+                doc.title = newTender.title;
+                doc.amount = newTender.amount;
+                doc.currency = newTender.currency;
+                doc.status = newTender.status;
+                doc.suppliers = newTender.suppliers;
+                doc.createdAt = newTender.createdAt;
+                doc.history = newTender.history;
+                doc.save(function (err, newDoc) {
+                    if (err) {
+                        errorHandler(err);
+                    } else {
+                         console.log(newDoc);
+                    }
+                });
+            });
+
+
         }
     });
 }
 
 function updateTender(oldTender, newTender) {
-    console.log('UPDATE!');
-    console.log(compareTenders(oldTender, newTender));
+    const compareResults = compareTenders(oldTender, newTender);
+    if (Object.keys(compareResults).length !== 0) {
+        const tNewTender = {};
+        tNewTender._id = newTender._id;
+        tNewTender.name = newTender.name;
+        tNewTender.datePublished = newTender.datePublished;
+        tNewTender.startDate = newTender.startDate;
+        tNewTender.awardCriteria = newTender.awardCriteria;
+        tNewTender.tenderers = newTender.tenderers;
+        tNewTender.items = newTender.items;
+        tNewTender.classification_ids = newTender.classification_ids;
+        tNewTender.tenderID = newTender.tenderID;
+        tNewTender.title = newTender.title;
+        tNewTender.amount = newTender.amount;
+        tNewTender.currency = newTender.currency;
+        tNewTender.status = newTender.status;
+        tNewTender.suppliers = newTender.suppliers;
+        tNewTender.createdAt = oldTender.createdAt;
+        tNewTender.history = Object.assign(oldTender.history, {[new Date(Date.now()).toLocaleDateString().toString()]: compareResults});
+        return tNewTender;
+    } else return oldTender;
 }
 
+export function getTenderByID(tender, callback) {
+    Tender.find({_id: tender._id}).then(data => callback(data[0]));
+}
 
+export function listAllTenders(callback) {
+    return Tender.find({}).then(data => callback(data));
+}
 
 export function listTenders(tenderFilter, callback) {
     Tender.find(tenderFilter).then(data => callback(data));
@@ -64,7 +119,7 @@ export function setNextURI(URI) {
         if (doc) {
             doc.nextURI = URI;
             doc.save((err, doc) => {
-                if(err){
+                if (err) {
                     errorHandler(err);
                 }
             });
@@ -74,7 +129,7 @@ export function setNextURI(URI) {
             uri._id = 'nextURI';
             uri.nextURI = URI;
             uri.save((err, doc) => {
-                if(err){
+                if (err) {
                     errorHandler(err);
                 }
             });
@@ -85,7 +140,7 @@ export function setNextURI(URI) {
 export function getNextURI(callback) {
     NextURI.findOne({_id: 'nextURI'}, (err, doc) => {
         if (doc) {
-           callback(doc.nextURI);
+            callback(doc.nextURI);
 
         } else {
             callback(false);

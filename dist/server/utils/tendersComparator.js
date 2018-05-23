@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (oldTender, newTender2) {
+exports.default = function (oldTender, newTender) {
 
-    var newTender = {
+    /*const newTender = {
         "_id": "a188a975c4984bd68c67e61ef187c54e",
         "history": {
             "2018-5-21": "Added to DB"
@@ -20,78 +20,76 @@ exports.default = function (oldTender, newTender2) {
         "startDate": "2017-11-23T12:38:39+02:00",
         "datePublished": "2017-10-13T14:06:56.116592+03:00",
         "name": "Національний Банк України",
-        "classification_ids": ["72260000-5"],
-        "items": ["Послуги, пов’язані з програмним забезпеченням"],
-        "tenderers": ["ТОВ \"ОС КОНСАЛТІНГ\"", "ТОВ \"РДТЕХ\"", "Приватне Акціонерне Товариство \"Пріоком\"", "ТОВ \"ЦЕНТР СИСТЕМНОЇ ІНТЕГРАЦІЇ\"", "ТОВ \"DILDO\""],
+        "classification_ids": [
+            "72260000-5"
+        ],
+        "items": [
+            "Послуги, пов’язані з програмним забезпеченням"
+        ],
+        "tenderers": [
+            "ТОВ \"ОС КОНСАЛТІНГ\"",
+            "ТОВ \"РДТЕХ\"",
+            "Приватне Акціонерне Товариство \"Пріоком\"",
+            "ТОВ \"ЦЕНТР СИСТЕМНОЇ ІНТЕГРАЦІЇ\"",
+            "ТОВ \"DILDO\""
+        ],
         "__v": 0
-    };
+    };*/
 
     var tenderDifferences = {};
     if (compareNames(oldTender, newTender) !== 0) {
         tenderDifferences.names = compareNames(oldTender, newTender);
     }
-    //console.log(compareNames(oldTender, newTender), compareNames(oldTender, newTender) !== 0);
 
     if (compareStartDates(oldTender, newTender) !== 0) {
         tenderDifferences.startDates = compareStartDates(oldTender, newTender).toString();
     }
-    // console.log(compareStartDates(oldTender, newTender), compareStartDates(oldTender, newTender) !== 0);
 
     if (comparePublishedDates(oldTender, newTender) !== 0) {
         tenderDifferences.PublishedDates = comparePublishedDates(oldTender, newTender);
     }
-    // console.log(comparePublishedDates(oldTender, newTender), comparePublishedDates(oldTender, newTender) !== 0);
 
     if (compareIds(oldTender, newTender) !== 0) {
         tenderDifferences.iDs = compareIds(oldTender, newTender);
     }
-    // console.log(compareIds(oldTender, newTender), compareIds(oldTender, newTender) !== 0);
 
     if (compareTitles(oldTender, newTender) !== 0) {
         tenderDifferences.titles = compareTitles(oldTender, newTender);
     }
-    //console.log(compareTitles(oldTender, newTender), compareTitles(oldTender, newTender) !== 0);
 
     if (compareAmounts(oldTender, newTender) !== 0) {
         tenderDifferences.amounts = compareAmounts(oldTender, newTender);
     }
-    // console.log(compareAmounts(oldTender, newTender), compareAmounts(oldTender, newTender) !== 0);
 
     if (compareCurrencies(oldTender, newTender) !== 0) {
         tenderDifferences.currencies = compareCurrencies(oldTender, newTender);
     }
 
-    //console.log(compareCurrencies(oldTender, newTender), compareCurrencies(oldTender, newTender) !== 0);
-
     if (compareStatuses(oldTender, newTender) !== 0) {
         tenderDifferences.statuses = compareStatuses(oldTender, newTender);
     }
-    // console.log(compareStatuses(oldTender, newTender), compareStatuses(oldTender, newTender) !== 0);
 
-    if ((oldTender, newTender) !== 0) {
+    if (compareTenderers(oldTender, newTender) !== 0) {
         tenderDifferences = Object.assign({}, tenderDifferences, { tenderers: compareTenderers(oldTender, newTender) });
     }
-    //  console.log(compareTenderers(oldTender, newTender), compareTenderers(oldTender, newTender) !== 0);
 
-    /*if (compareSuppliers(oldTender, newTender) !== 0) {
-        tenderDifferences.suppliers = compareSuppliers(oldTender, newTender)
+    if (compareSuppliers(oldTender, newTender) !== 0) {
+        tenderDifferences.suppliers = compareSuppliers(oldTender, newTender);
     }
-    console.log(compareSuppliers(oldTender, newTender), compareSuppliers(oldTender, newTender) !== 0);
-      if (compareItems(oldTender, newTender) !== 0) {
-        tenderDifferences.items = compareItems(oldTender, newTender)
-    }
-    console.log(compareItems(oldTender, newTender), compareItems(oldTender, newTender) !== 0);
-     if (compareClassification_ids(oldTender, newTender) !== 0) {
-        tenderDifferences.classification_ids = compareClassification_ids(oldTender, newTender)
-    }
-    console.log(compareClassification_ids(oldTender, newTender), compareClassification_ids(oldTender, newTender) !== 0);*/
 
-    console.log(tenderDifferences);
+    if (compareItems(oldTender, newTender) !== 0) {
+        tenderDifferences.items = compareItems(oldTender, newTender);
+    }
+
+    if (compareClassification_ids(oldTender, newTender) !== 0) {
+        tenderDifferences.classification_ids = compareClassification_ids(oldTender, newTender);
+    }
+
     return tenderDifferences;
 };
 
 function formatDate(date) {
-    return new Date(date).toLocaleTimeString();
+    return new Date(date).toLocaleDateString();
 }
 
 function compareNames(oldTender, newTender) {
@@ -145,16 +143,30 @@ function compareStatuses(oldTender, newTender) {
 }
 
 function compareArrays(oldArray, newArray) {
+    var tOldArray = [];
+    var tNewArray = [];
+    if (oldArray) {
+        tOldArray = oldArray;
+    } else {
+        tOldArray = [];
+    }
+
+    if (newArray) {
+        tNewArray = newArray;
+    } else {
+        tNewArray = [];
+    }
+
     var added = [];
     var deleted = [];
-    newArray.forEach(function (el) {
-        if (oldArray.indexOf(el) === -1) {
+    tNewArray.forEach(function (el) {
+        if (tOldArray.indexOf(el) === -1) {
             added.push(el);
         }
     });
 
-    oldArray.forEach(function (el) {
-        if (newArray.indexOf(el) === -1) {
+    tOldArray.forEach(function (el) {
+        if (tNewArray.indexOf(el) === -1) {
             deleted.push(el);
         }
     });
@@ -176,7 +188,6 @@ function compareArrays(oldArray, newArray) {
 
 function compareArraysDesc(oldTender, newTender, fName, description) {
     var compareResult = compareArrays(oldTender[fName], newTender[fName]);
-    console.log(compareResult);
     if (compareResult === 0) {
         return 0;
     } else {
@@ -185,15 +196,25 @@ function compareArraysDesc(oldTender, newTender, fName, description) {
         if (compareResult.added) {
             added = '\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B ' + description + ':  + ' + compareResult.added.join(', ');
         }
-        if (compareResult.added) {
+        if (compareResult.deleted) {
             deleted = '\u0423\u0434\u0430\u043B\u0435\u043D\u044B ' + description + ':  + ' + compareResult.deleted.join(', ');
         }
-        return added + ';' + deleted;
+
+        if (added.length > 0 && deleted.length > 0) {
+            return added + '; ' + deleted;
+        }
+
+        if (added.length > 0 && deleted.length === 0) {
+            return added;
+        }
+
+        if (added.length === 0 && deleted.length > 0) {
+            return deleted;
+        }
     }
 }
 
 function compareTenderers(oldTender, newTender) {
-    //console.log(compareArraysDesc(oldTender, newTender, 'tenderers', 'участники'));
     return compareArraysDesc(oldTender, newTender, 'tenderers', 'участники');
 }
 

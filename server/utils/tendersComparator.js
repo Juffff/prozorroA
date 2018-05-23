@@ -1,5 +1,5 @@
 function formatDate(date) {
-    return new Date(date).toLocaleTimeString();
+    return new Date(date).toLocaleDateString();
 }
 
 function compareNames(oldTender, newTender) {
@@ -54,16 +54,30 @@ function compareStatuses(oldTender, newTender) {
 }
 
 function compareArrays(oldArray, newArray) {
+    let tOldArray = [];
+    let tNewArray = [];
+    if (oldArray) {
+        tOldArray = oldArray;
+    } else {
+        tOldArray = [];
+    }
+
+    if (newArray) {
+        tNewArray = newArray;
+    } else {
+        tNewArray = [];
+    }
+
     let added = [];
     let deleted = [];
-    newArray.forEach(el => {
-        if (oldArray.indexOf(el) === -1) {
+    tNewArray.forEach(el => {
+        if (tOldArray.indexOf(el) === -1) {
             added.push(el);
         }
     });
 
-    oldArray.forEach(el => {
-        if (newArray.indexOf(el) === -1) {
+    tOldArray.forEach(el => {
+        if (tNewArray.indexOf(el) === -1) {
             deleted.push(el);
         }
     });
@@ -85,7 +99,6 @@ function compareArrays(oldArray, newArray) {
 
 function compareArraysDesc(oldTender, newTender, fName, description) {
     const compareResult = compareArrays(oldTender[fName], newTender[fName]);
-    console.log(compareResult);
     if (compareResult === 0) {
         return 0;
     } else {
@@ -94,15 +107,26 @@ function compareArraysDesc(oldTender, newTender, fName, description) {
         if (compareResult.added) {
             added = `Добавлены ${description}:  + ${compareResult.added.join(', ')}`;
         }
-        if (compareResult.added) {
+        if (compareResult.deleted) {
             deleted = `Удалены ${description}:  + ${compareResult.deleted.join(', ')}`;
         }
-        return added + ';' + deleted;
+
+        if (added.length > 0 && deleted.length > 0) {
+            return added + '; ' + deleted;
+        }
+
+        if (added.length > 0 && deleted.length === 0) {
+            return added;
+        }
+
+        if (added.length === 0 && deleted.length > 0) {
+            return deleted;
+        }
+
     }
 }
 
 function compareTenderers(oldTender, newTender) {
-    //console.log(compareArraysDesc(oldTender, newTender, 'tenderers', 'участники'));
     return compareArraysDesc(oldTender, newTender, 'tenderers', 'участники');
 }
 
@@ -118,9 +142,9 @@ function compareClassification_ids(oldTender, newTender) {
     return compareArraysDesc(oldTender, newTender, 'classification_ids', 'классификаторы');
 }
 
-export default function (oldTender, newTender2) {
+export default function (oldTender, newTender) {
 
-    const newTender = {
+    /*const newTender = {
         "_id": "a188a975c4984bd68c67e61ef187c54e",
         "history": {
             "2018-5-21": "Added to DB"
@@ -148,71 +172,57 @@ export default function (oldTender, newTender2) {
             "ТОВ \"DILDO\""
         ],
         "__v": 0
-    };
+    };*/
 
     let tenderDifferences = {};
     if (compareNames(oldTender, newTender) !== 0) {
         tenderDifferences.names = compareNames(oldTender, newTender);
     }
-    //console.log(compareNames(oldTender, newTender), compareNames(oldTender, newTender) !== 0);
 
     if (compareStartDates(oldTender, newTender) !== 0) {
         tenderDifferences.startDates = compareStartDates(oldTender, newTender).toString();
     }
-   // console.log(compareStartDates(oldTender, newTender), compareStartDates(oldTender, newTender) !== 0);
 
     if (comparePublishedDates(oldTender, newTender) !== 0) {
         tenderDifferences.PublishedDates = comparePublishedDates(oldTender, newTender)
     }
-   // console.log(comparePublishedDates(oldTender, newTender), comparePublishedDates(oldTender, newTender) !== 0);
 
     if (compareIds(oldTender, newTender) !== 0) {
         tenderDifferences.iDs = compareIds(oldTender, newTender)
     }
-   // console.log(compareIds(oldTender, newTender), compareIds(oldTender, newTender) !== 0);
 
     if (compareTitles(oldTender, newTender) !== 0) {
         tenderDifferences.titles = compareTitles(oldTender, newTender);
     }
-    //console.log(compareTitles(oldTender, newTender), compareTitles(oldTender, newTender) !== 0);
 
     if (compareAmounts(oldTender, newTender) !== 0) {
         tenderDifferences.amounts = compareAmounts(oldTender, newTender);
     }
-   // console.log(compareAmounts(oldTender, newTender), compareAmounts(oldTender, newTender) !== 0);
 
     if (compareCurrencies(oldTender, newTender) !== 0) {
         tenderDifferences.currencies = compareCurrencies(oldTender, newTender);
     }
 
-    //console.log(compareCurrencies(oldTender, newTender), compareCurrencies(oldTender, newTender) !== 0);
-
     if (compareStatuses(oldTender, newTender) !== 0) {
         tenderDifferences.statuses = compareStatuses(oldTender, newTender)
     }
-   // console.log(compareStatuses(oldTender, newTender), compareStatuses(oldTender, newTender) !== 0);
 
-    if ((oldTender, newTender) !== 0) {
+
+    if (compareTenderers(oldTender, newTender) !== 0) {
         tenderDifferences = Object.assign({}, tenderDifferences, {tenderers: compareTenderers(oldTender, newTender)})
     }
-  //  console.log(compareTenderers(oldTender, newTender), compareTenderers(oldTender, newTender) !== 0);
 
-    /*if (compareSuppliers(oldTender, newTender) !== 0) {
+    if (compareSuppliers(oldTender, newTender) !== 0) {
         tenderDifferences.suppliers = compareSuppliers(oldTender, newTender)
     }
-    console.log(compareSuppliers(oldTender, newTender), compareSuppliers(oldTender, newTender) !== 0);
-
 
     if (compareItems(oldTender, newTender) !== 0) {
         tenderDifferences.items = compareItems(oldTender, newTender)
     }
-    console.log(compareItems(oldTender, newTender), compareItems(oldTender, newTender) !== 0);
 
     if (compareClassification_ids(oldTender, newTender) !== 0) {
         tenderDifferences.classification_ids = compareClassification_ids(oldTender, newTender)
     }
-    console.log(compareClassification_ids(oldTender, newTender), compareClassification_ids(oldTender, newTender) !== 0);*/
 
-    console.log(tenderDifferences);
     return tenderDifferences;
 }

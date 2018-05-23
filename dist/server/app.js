@@ -71,8 +71,7 @@ process.on('uncaughtException', function (err) {
     console.log("Node NOT Exiting...");
     db.getNextURI(function (uri) {
         if (uri) {
-            //  goThrowTenders(uri);
-            goThrowTenders(startUri);
+            goThrowTenders(uri);
         } else {
             goThrowTenders(startUri);
         }
@@ -87,7 +86,7 @@ app.get('/', function (req, res) {
     console.log('Start');
     db.getNextURI(function (uri) {
         if (uri) {
-            goThrowTenders(startUri);
+            goThrowTenders(uri);
         } else {
             goThrowTenders(startUri);
         }
@@ -104,10 +103,15 @@ app.get('/', function (req, res) {
     }, 60000);
 
     res.sendStatus(200);
+}).get('/update', function (req, res) {
+    db.listAllTenders(function (data) {
+        updateExistedTenders(data);
+    });
+    res.send('ok');
 });
 
 function goThrowTenders(uri) {
-    console.log(uri);
+    console.log('uri - ', uri);
     var milliseconds = null;
 
     var https = require('https');
@@ -118,22 +122,6 @@ function goThrowTenders(uri) {
             str += chunk;
         });
         res.on('end', function () {
-            /*let timeOut = setTimeout(function () {
-                if(new Date().getTime() - milliseconds > 30000){
-                    console.log(new Date().getTime() - milliseconds);
-                    console.log('Wake and go!');
-                    logger.log('info', 'Wake and go!');
-                    db.getNextURI(function (uri) {
-                        if (uri) {
-                            goThrowTenders(uri);
-                            clearTimeout(timeOut);
-                        } else {
-                            goThrowTenders(startUri);
-                            clearTimeout(timeOut);
-                        }
-                    });
-                };
-            }, 30000);*/
             var resJson = JSON.parse(str);
             var nextUri = resJson.next_page.uri;
             var data = resJson.data;
@@ -151,6 +139,14 @@ function goThrowTenders(uri) {
                 db.setNextURI(nextUri);
                 goThrowTenders(nextUri);
             }
+        });
+    });
+}
+
+function updateExistedTenders(data) {
+    data.forEach(function (tender) {
+        db.getTenderByID(tender, function (tender) {
+            analiseToTender(apiPrefix, tender._id);
         });
     });
 }
@@ -216,8 +212,6 @@ function analiseToTender(prefix, id, uri) {
                                         tender.items = itemIDs;
                                         tender.classification_ids = classificationIDs;
                                     }
-                                    //tender.items = allInfo.items.map(item => item.classification.description);
-                                    //tender.classification_ids = allInfo.items.map(item => item.classification.id);
                                     tender.tenderID = allInfo.tenderID;
                                     tender.title = allInfo.title;
                                     tender.currency = allInfo.value.currency;
@@ -256,8 +250,8 @@ function analiseToTender(prefix, id, uri) {
                                     }
                                     if (a === true) {
                                         _logger2.default.log('info', 'a tender was found - ' + JSON.stringify(tender));
-                                        console.log(uri);
-                                        /*       console.log(tender);*/
+                                        /*   console.log(uri);
+                                        /!*       console.log(tender);*!/*/
                                         db.createTender(tender);
                                         a = false;
                                     }
