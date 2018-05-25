@@ -56,9 +56,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*import jsdom from 'jsdom';
-
-const {JSDOM} = jsdom;*/
 db.connect(); /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 
 var corsOptions = {
@@ -95,6 +92,9 @@ app.get('/tenders', function (req, res) {
     db.listTenders({}, function (data) {
         res.send(data);
     });
+}).get('/start2018', function (req, res) {
+    goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
+    res.send(200);
 }).get('/ping', function (req, res) {
     res.sendStatus(200);
 });
@@ -285,9 +285,9 @@ var task5Min = _nodeCron2.default.schedule('*/5 * * * *', function () {
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
     });
-}, false);
+}, true);
 
-var task1Hour = _nodeCron2.default.schedule('* 1 * * *', function () {
+var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
     _logger2.default.log('info', '1HourTask started');
     db.getNextURI(function (uri) {
         if (uri) {
@@ -306,7 +306,7 @@ var task1Hour = _nodeCron2.default.schedule('* 1 * * *', function () {
             }
         });
     }, 60000);
-}, false);
+}, true);
 
 task5Min.start();
 task1Hour.start();

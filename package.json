@@ -4,7 +4,13 @@
   "description": "",
   "main": "./server/app.js",
   "scripts": {
+    "clean": "rm -rf build && mkdir build",
+    "cpserver": "cp -R ./server/ ./build/",
+    "cpclient": "cp -R ./client/ ./build/client",
+    "build-server": "npm run clean && npm run cpserver && npm run cpclient && babel -d ./build ./server",
     "devserver": "./node_modules/.bin/nodemon ./server/app.js --exec babel-node --presets es2015",
+    "server": "babel-node ./server/app.js --exec babel-node --presets es2015",
+    "serverRun": "node ./build/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,7 +20,6 @@
     "express": "^4.15.4",
     "express-static": "^1.2.5",
     "got": "^7.1.0",
-    "jsdom": "^11.2.0",
     "lodash": "^4.17.4",
     "mongoose": "^4.11.0",
     "node-cron": "^1.2.1",

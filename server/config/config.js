@@ -7,7 +7,7 @@ export default {
     port: "27017"
   },
   prefix: 'https://public.api.openprocurement.org/api/2.4/tenders/',
-  startUri: 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-10',
+  startUri: `https://public.api.openprocurement.org/api/2.4/tenders?offset=${new Date().toLocaleString(['ban', 'id']).split(' ')[0].split('/').reverse().join('-')}`,
   minAmount: 5000000,
   maxAmount: 10000000000
 }
