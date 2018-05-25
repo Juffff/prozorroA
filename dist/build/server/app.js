@@ -1,8 +1,10 @@
 'use strict';
 
 var _path = require('path');
-
 var _path2 = _interopRequireDefault(_path);
+
+console.log((0, _path2.default)(__dirname));
+console.log((0, _path2.default)(__dirname, 'server'));
 
 var _express = require('express');
 
@@ -68,8 +70,6 @@ function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
 
-console.log((0, _path2.default)(__dirname));
-console.log((0, _path2.default)(__dirname, 'server'));
 /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 
 db.connect();
