@@ -7,7 +7,7 @@
     "clean": "rm -rf build && mkdir build",
     "cpserver": "cp -R ./server/ ./build",
     "cpclient": "cp -R ./client/ ./build/client",
-    "build-server": "npm run clean && npm run cpserver && npm run cpclient && babel -d ./build/server ./server",
+    "build-server": "npm run clean && npm run cpserver && npm run cpclient && babel -d ./build/ ./server",
     "devserver": "./node_modules/.bin/nodemon ./server/app.js --exec babel-node --presets es2015",
     "server": "babel-node ./server/app.js --exec babel-node --presets es2015",
     "serverRun": "node ./build/app.js",

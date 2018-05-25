@@ -1,15 +1,20 @@
-export default {
-    'active' :                              'Переговоры',
-    'active.enquiries':                     'Период уточнений',
-    'active.tendering':                     'Ожидание предложений',
-    'active.auction':                       'Период аукциона',
-    'active.qualification':                 'Квалификация победителя',
-    'active.pre-qualification':             'Квалификация/Переквалификация',
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    'active': 'Переговоры',
+    'active.enquiries': 'Период уточнений',
+    'active.tendering': 'Ожидание предложений',
+    'active.auction': 'Период аукциона',
+    'active.qualification': 'Квалификация победителя',
+    'active.pre-qualification': 'Квалификация/Переквалификация',
     'active.pre-qualification.stand-still': 'Преквалификация/Период оспариваний',
-    'active.awarded':                       'Предложения рассмотрены',
-    'unsuccessful':                         'Закупка не состоялась',
-    'complete':                             'Закупка закончена',
-    'cancelled':                            'Закупка отменена'
+    'active.awarded': 'Предложения рассмотрены',
+    'unsuccessful': 'Закупка не состоялась',
+    'complete': 'Закупка закончена',
+    'cancelled': 'Закупка отменена'
 };
 
 /*

@@ -1,15 +1,21 @@
-import mongoose from 'mongoose';
+'use strict';
 
-const Schema = mongoose.Schema;
+var _mongoose = require('mongoose');
 
-const TenderSchema = new Schema({
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+var TenderSchema = new Schema({
     _id: String,
     name: String,
     startDate: String,
     datePublished: String,
     awardCriteria: String,
     tenderers: [],
-    items:[],
+    items: [],
     classification_ids: [],
     tenderID: String,
     title: String,
@@ -21,4 +27,4 @@ const TenderSchema = new Schema({
     history: Schema.Types.Mixed
 });
 
-const Tender = mongoose.model('Tender', TenderSchema);
+var Tender = _mongoose2.default.model('Tender', TenderSchema);

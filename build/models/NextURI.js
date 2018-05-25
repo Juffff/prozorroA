@@ -1,10 +1,16 @@
-import mongoose from 'mongoose';
+'use strict';
 
-const Schema = mongoose.Schema;
+var _mongoose = require('mongoose');
 
-const NextURISchema = new Schema({
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+var NextURISchema = new Schema({
     _id: String,
     nextURI: String
 });
 
-const NextURI = mongoose.model('NextURI', NextURISchema);
+var NextURI = _mongoose2.default.model('NextURI', NextURISchema);
