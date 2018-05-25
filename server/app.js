@@ -47,14 +47,34 @@ process.on('uncaughtException', function (err) {
 });
 
 app
-    .get('/tenders', (req, res) => {
-        db.listTenders({}, function (data) {
-            res.send(data);
-        })
+    .get('/start', (req, res) => {
+        db.getNextURI(function (uri) {
+            if (uri) {
+                goThrowTenders(uri);
+            } else {
+                goThrowTenders(startUri);
+            }
+            res.send(200);
+        });
+        setTimeout(function () {
+            console.log('Wake and move!');
+            db.getNextURI(function (uri) {
+                if (uri) {
+                    goThrowTenders(uri);
+                } else {
+                    goThrowTenders(startUri);
+                }
+            });
+        }, 60000);
     })
     .get('/start2018', (req, res) => {
         goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
         res.send(200);
+    })
+    .get('/tenders', (req, res) => {
+        db.listTenders({}, function (data) {
+            res.send(data);
+        })
     })
 
     .get('/ping', (req, res) => {
@@ -64,6 +84,8 @@ app
 app.use('/', serve(path.join(__dirname, '..', 'client')));
 
 function goThrowTenders(uri) {
+    task1Hour.stop();
+    task5Min.stop();
     console.log('uri - ', uri);
     let milliseconds = null;
 
@@ -78,11 +100,13 @@ function goThrowTenders(uri) {
             const resJson = JSON.parse(str);
             const nextUri = resJson.next_page.uri;
             const data = resJson.data;
-            console.log(data.length);
+          //  console.log(data.length);
             if (data.length === 0) {
                 logger.log('info', 'goThrowTenders finished');
                 console.log('Go throw tenders finished.');
                 db.setNextURI(startUri);
+                task1Hour.start();
+                task5Min.start();
             } else {
                 resJson.data.map(data => data.id).forEach(id => {
                     analiseToTender(apiPrefix, id, uri);
@@ -232,9 +256,17 @@ function analiseToTender(prefix, id, uri) {
 
 }
 
-app.listen(8080, () => {
+/*app.listen(8080, () => {
     console.log(`Server is running on 8080`);
-});
+});*/
+
+app.listen(process.env.PORT || 8080, () => {
+    if(process.env.PORT){
+        console.log(`Server is running on ${process.env.PORT}`);
+    } else {
+        console.log(`Server is running on 8080`);
+
+    }});
 
 /*cron.schedule('1-59 * * * * * ', function(){
     console.log('sec 2');
@@ -249,7 +281,7 @@ const task5Min = cron.schedule('*/5 * * * *', function () {
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
     });
-}, true);
+}, false);
 
 const task1Hour = cron.schedule('* */1 * * *', function () {
     logger.log('info', '1HourTask started');
@@ -271,7 +303,7 @@ const task1Hour = cron.schedule('* */1 * * *', function () {
         });
     }, 60000);
 
-}, true);
+}, false);
 
 task5Min.start();
 task1Hour.start();

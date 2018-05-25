@@ -88,13 +88,32 @@ process.on('uncaughtException', function (err) {
     });
 });
 
-app.get('/tenders', function (req, res) {
-    db.listTenders({}, function (data) {
-        res.send(data);
+app.get('/start', function (req, res) {
+    db.getNextURI(function (uri) {
+        if (uri) {
+            goThrowTenders(uri);
+        } else {
+            goThrowTenders(startUri);
+        }
+        res.send(200);
     });
+    setTimeout(function () {
+        console.log('Wake and move!');
+        db.getNextURI(function (uri) {
+            if (uri) {
+                goThrowTenders(uri);
+            } else {
+                goThrowTenders(startUri);
+            }
+        });
+    }, 60000);
 }).get('/start2018', function (req, res) {
     goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
     res.send(200);
+}).get('/tenders', function (req, res) {
+    db.listTenders({}, function (data) {
+        res.send(data);
+    });
 }).get('/ping', function (req, res) {
     res.sendStatus(200);
 });
@@ -102,6 +121,8 @@ app.get('/tenders', function (req, res) {
 app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
 
 function goThrowTenders(uri) {
+    task1Hour.stop();
+    task5Min.stop();
     console.log('uri - ', uri);
     var milliseconds = null;
 
@@ -116,11 +137,13 @@ function goThrowTenders(uri) {
             var resJson = JSON.parse(str);
             var nextUri = resJson.next_page.uri;
             var data = resJson.data;
-            console.log(data.length);
+            //  console.log(data.length);
             if (data.length === 0) {
                 _logger2.default.log('info', 'goThrowTenders finished');
                 console.log('Go throw tenders finished.');
                 db.setNextURI(startUri);
+                task1Hour.start();
+                task5Min.start();
             } else {
                 resJson.data.map(function (data) {
                     return data.id;
@@ -268,8 +291,16 @@ function analiseToTender(prefix, id, uri) {
     }
 }
 
-app.listen(8080, function () {
-    console.log('Server is running on 8080');
+/*app.listen(8080, () => {
+    console.log(`Server is running on 8080`);
+});*/
+
+app.listen(process.env.PORT || 8080, function () {
+    if (process.env.PORT) {
+        console.log('Server is running on ' + process.env.PORT);
+    } else {
+        console.log('Server is running on 8080');
+    }
 });
 
 /*cron.schedule('1-59 * * * * * ', function(){
@@ -285,7 +316,7 @@ var task5Min = _nodeCron2.default.schedule('*/5 * * * *', function () {
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
     });
-}, true);
+}, false);
 
 var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
     _logger2.default.log('info', '1HourTask started');
@@ -306,7 +337,7 @@ var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
             }
         });
     }, 60000);
-}, true);
+}, false);
 
 task5Min.start();
 task1Hour.start();

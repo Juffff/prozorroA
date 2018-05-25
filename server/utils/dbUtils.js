@@ -12,7 +12,8 @@ const NextURI = mongoose.model('NextURI');
 export function connect() {
     const db = config.db;
     mongoose.Promise = global.Promise;
-    mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`, { useMongoClient: true });
+    //mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`, { useMongoClient: true });
+    mongoose.connect(`${db.user}:${db.password}@${db.host}:${db.port}/${db.name}`);
     //mongoose.set('debug', true);
 }
 

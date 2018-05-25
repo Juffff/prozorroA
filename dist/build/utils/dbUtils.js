@@ -49,7 +49,8 @@ var NextURI = _mongoose2.default.model('NextURI');
 function connect() {
     var db = _config2.default.db;
     _mongoose2.default.Promise = global.Promise;
-    _mongoose2.default.connect('mongodb://' + db.host + ':' + db.port + '/' + db.name, { useMongoClient: true });
+    //mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`, { useMongoClient: true });
+    _mongoose2.default.connect(db.user + ':' + db.password + '@' + db.host + ':' + db.port + '/' + db.name);
     //mongoose.set('debug', true);
 }
 
