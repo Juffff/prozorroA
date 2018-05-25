@@ -24,27 +24,27 @@ var _nodeCron = require('node-cron');
 
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
-var _dbutils = require('./server/utils/dbutils');
+var _dbutils = require('./build/server/utils/dbutils');
 
 var db = _interopRequireWildcard(_dbutils);
 
-var _item_id = require('./server/enums/item_id');
+var _item_id = require('./build/server/enums/item_id');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 
-var _tender_status = require('./server/enums/tender_status');
+var _tender_status = require('./build/server/enums/tender_status');
 
 var _tender_status2 = _interopRequireDefault(_tender_status);
 
-var _logger = require('./server/utils/logger');
+var _logger = require('./build/server/utils/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _errorHandler = require('./server/errorHandler');
+var _errorHandler = require('./build/server/errorHandler');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
-var _config = require('./server/config/config');
+var _config = require('./build/server/config/config');
 
 var _config2 = _interopRequireDefault(_config);
 
