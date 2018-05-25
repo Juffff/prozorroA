@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import got from 'got';
+import cron from 'node-cron';
 /*import jsdom from 'jsdom';
 
 const {JSDOM} = jsdom;*/
@@ -11,6 +12,9 @@ import itemIdEnum from './enums/item_id';
 import tenderStatusEnum from './enums/tender_status';
 import logger from './utils/logger';
 import errorHandler from "./errorHandler";
+import config from "./config/config";
+import serve from 'express-static';
+import path from 'path';
 
 db.connect();
 const corsOptions = {
@@ -24,14 +28,13 @@ function pause(seconds) {
     }
 }
 
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
 
-let startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-17T13%3A26%3A33.231516%2B03%3A00';
-const apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
+let startUri = config.startUri;
+const apiPrefix = config.prefix;
 
 process.on('uncaughtException', function (err) {
     logger.log('error', err.stack);
@@ -46,42 +49,19 @@ process.on('uncaughtException', function (err) {
     });
 });
 
-app.get('/', (req, res) => {
+app.get('/tenders', (req, res) => {
     db.listTenders({}, function (data) {
         res.send(data);
     })
 })
-    .get('/start', (req, res) => {
-        console.log('Start');
-        db.getNextURI(function (uri) {
-            if (uri) {
-                goThrowTenders(uri);
-            } else {
-                goThrowTenders(startUri);
-            }
-        });
-        setTimeout(function () {
-            console.log('Wake and move!');
-            db.getNextURI(function (uri) {
-                if (uri) {
-                    goThrowTenders(uri);
-                } else {
-                    goThrowTenders(startUri);
-                }
-            });
-        }, 60000);
-
+    .get('/ping', (req, res) => {
         res.sendStatus(200);
-    })
-    .get('/update', (req, res) => {
-        db.listAllTenders(function (data) {
-            updateExistedTenders(data);
-        });
-        res.send('ok');
     });
 
+app.use('/', serve(path.join(__dirname, '..', 'client')));
+
 function goThrowTenders(uri) {
-    console.log('uri - ',uri);
+    console.log('uri - ', uri);
     let milliseconds = null;
 
     const https = require('https');
@@ -132,22 +112,22 @@ function analiseToTender(prefix, id, uri) {
                         try {
                             if (allInfo.value) {
                                 tender.amount = allInfo.value.amount;
-                                if (Number.parseInt(tender.amount, 10) > 5000000) {
+                                if (Number.parseInt(tender.amount, 10) > config.minAmount && Number.parseInt(tender.amount, 10) < config.maxAmount) {
                                     tender._id = allInfo.id;
                                     tender.name = allInfo.procuringEntity.name;
                                     if (allInfo.auctionPeriod) {
                                         tender.startDate = allInfo.auctionPeriod.startDate;
-                                        if(tender.startDate === undefined){
-                                            if(allInfo.documents){
-                                                if(Array.isArray(allInfo.documents)){
-                                                    if(allInfo.documents[0]){
+                                        if (tender.startDate === undefined) {
+                                            if (allInfo.documents) {
+                                                if (Array.isArray(allInfo.documents)) {
+                                                    if (allInfo.documents[0]) {
                                                         tender.startDate = allInfo.documents[0].datePublished;
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    if(allInfo.enquiryPeriod){
+                                    if (allInfo.enquiryPeriod) {
                                         tender.datePublished = allInfo.enquiryPeriod.invalidationDate;
                                     }
                                     tender.awardCriteria = allInfo.awardCriteria;
@@ -203,7 +183,7 @@ function analiseToTender(prefix, id, uri) {
                                         }
                                         tender.suppliers = suppliers;
                                     }
-                                    if(!tender.tenderers && tender.suppliers){
+                                    if (!tender.tenderers && tender.suppliers) {
                                         tender.tenderers = tender.suppliers;
                                     }
                                     let a = false;
@@ -217,9 +197,9 @@ function analiseToTender(prefix, id, uri) {
                                         }
                                     }
                                     if (a === true) {
-                                        logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
-                                     /*   console.log(uri);
-                                 /!*       console.log(tender);*!/*/
+                                        //logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
+                                        /*   console.log(uri);
+                                    /!*       console.log(tender);*!/*/
                                         db.createTender(tender);
                                         a = false;
                                     }
@@ -253,11 +233,42 @@ app.listen(8080, () => {
     console.log(`Server is running on 8080`);
 });
 
+/*cron.schedule('1-59 * * * * * ', function(){
+    console.log('sec 2');
+}, true);*/
 
-/*TODO:
-1. Reglament tasks
-2. Sorting
-3. Colors
-4. history
+/*const task1Min =  cron.schedule('*!/1 * * * *', function(){
+    console.log('minute 1');
+}, false);*/
 
-* */
+const task5Min = cron.schedule('*/5 * * * *', function () {
+    logger.log('info', '5MinTask started');
+    db.listAllTenders(function (data) {
+        updateExistedTenders(data);
+    });
+}, false);
+
+const task1Hour = cron.schedule('* 1 * * *', function () {
+    logger.log('info', '1HourTask started');
+    db.getNextURI(function (uri) {
+        if (uri) {
+            goThrowTenders(uri);
+        } else {
+            goThrowTenders(startUri);
+        }
+    });
+    setTimeout(function () {
+        console.log('Wake and move!');
+        db.getNextURI(function (uri) {
+            if (uri) {
+                goThrowTenders(uri);
+            } else {
+                goThrowTenders(startUri);
+            }
+        });
+    }, 60000);
+
+}, false);
+
+task5Min.start();
+task1Hour.start();

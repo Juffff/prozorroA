@@ -42,7 +42,7 @@ window.onload = () => {
     };
 
     function listReq(search, sort) {
-        const server = 'http://localhost:8080/';
+        const server = 'http://localhost:8080/tenders';
         fetch(server)
             .then(response => response.json())
             .then(json => {

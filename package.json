@@ -12,11 +12,12 @@
   "dependencies": {
     "cors": "latest",
     "express": "^4.15.4",
-    "express-static": "^1.2.4",
+    "express-static": "^1.2.5",
     "got": "^7.1.0",
     "jsdom": "^11.2.0",
     "lodash": "^4.17.4",
     "mongoose": "^4.11.0",
+    "node-cron": "^1.2.1",
     "replaceall": "^0.1.6",
     "utf8": "^3.0.0",
     "winston": "^2.4.2",

@@ -46,7 +46,7 @@ window.onload = function () {
     };
 
     function listReq(search, sort) {
-        var server = 'http://localhost:8080/';
+        var server = 'http://localhost:8080/tenders';
         fetch(server).then(function (response) {
             return response.json();
         }).then(function (json) {

@@ -41,7 +41,7 @@ var NextURI = _mongoose2.default.model('NextURI');
 function connect() {
     var db = _config2.default.db;
     _mongoose2.default.connect('mongodb://' + db.host + ':' + db.port + '/' + db.name);
-    _mongoose2.default.set('debug', true);
+    //mongoose.set('debug', true);
 }
 
 function createTender(tender) {
@@ -63,8 +63,11 @@ function createTender(tender) {
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
+            var date = new Date(Date.now());
+            var day = date.toLocaleDateString();
+            var time = date.toLocaleTimeString();
             if (!tender.history) {
-                newTender.history = _defineProperty({}, new Date(Date.now()).toLocaleDateString().toString(), 'Добавлен в базу');
+                newTender.history = _defineProperty({}, day + ':' + time, 'Тендер добавлен в базу');
             } else newTender.history = tender.history;
             newTender.save(function (err, doc) {
                 if (err) {
@@ -123,7 +126,10 @@ function updateTender(oldTender, newTender) {
         tNewTender.status = newTender.status;
         tNewTender.suppliers = newTender.suppliers;
         tNewTender.createdAt = oldTender.createdAt;
-        tNewTender.history = Object.assign(oldTender.history, _defineProperty({}, new Date(Date.now()).toLocaleDateString().toString(), compareResults));
+        var date = new Date(Date.now());
+        var day = date.toLocaleDateString();
+        var time = date.toLocaleTimeString();
+        tNewTender.history = Object.assign(oldTender.history, _defineProperty({}, day + ':' + time, compareResults));
         return tNewTender;
     } else return oldTender;
 }

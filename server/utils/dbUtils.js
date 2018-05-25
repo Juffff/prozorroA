@@ -12,8 +12,7 @@ const NextURI = mongoose.model('NextURI');
 export function connect() {
     const db = config.db;
     mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`);
-    mongoose.set('debug', true);
-
+    //mongoose.set('debug', true);
 }
 
 export function createTender(tender) {
@@ -35,8 +34,11 @@ export function createTender(tender) {
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
+            const date = new Date(Date.now());
+            const day = date.toLocaleDateString();
+            const time = date.toLocaleTimeString();
             if (!tender.history) {
-                newTender.history = {[new Date(Date.now()).toLocaleDateString().toString()]: 'Добавлен в базу'};
+                newTender.history = {[`${day}:${time}`]: 'Тендер добавлен в базу'};
             } else newTender.history = tender.history;
             newTender.save(function (err, doc) {
                 if (err) {
@@ -97,7 +99,10 @@ function updateTender(oldTender, newTender) {
         tNewTender.status = newTender.status;
         tNewTender.suppliers = newTender.suppliers;
         tNewTender.createdAt = oldTender.createdAt;
-        tNewTender.history = Object.assign(oldTender.history, {[new Date(Date.now()).toLocaleDateString().toString()]: compareResults});
+        const date = new Date(Date.now());
+        const day = date.toLocaleDateString();
+        const time = date.toLocaleTimeString();
+        tNewTender.history = Object.assign(oldTender.history, {[`${day}:${time}`]: compareResults});
         return tNewTender;
     } else return oldTender;
 }
@@ -141,7 +146,6 @@ export function getNextURI(callback) {
     NextURI.findOne({_id: 'nextURI'}, (err, doc) => {
         if (doc) {
             callback(doc.nextURI);
-
         } else {
             callback(false);
         }

@@ -16,6 +16,10 @@ var _got = require('got');
 
 var _got2 = _interopRequireDefault(_got);
 
+var _nodeCron = require('node-cron');
+
+var _nodeCron2 = _interopRequireDefault(_nodeCron);
+
 var _dbutils = require('./utils/dbutils');
 
 var db = _interopRequireWildcard(_dbutils);
@@ -36,15 +40,26 @@ var _errorHandler = require('./errorHandler');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
+var _config = require('./config/config');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _expressStatic = require('express-static');
+
+var _expressStatic2 = _interopRequireDefault(_expressStatic);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-db.connect();
 /*import jsdom from 'jsdom';
 
 const {JSDOM} = jsdom;*/
-/*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
+db.connect(); /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 
 var corsOptions = {
     origin: '*',
@@ -60,8 +75,8 @@ var app = (0, _express2.default)();
 app.use(_bodyParser2.default.json());
 app.use((0, _cors2.default)(corsOptions));
 
-var startUri = 'https://public.api.openprocurement.org/api/2.4/tenders?offset=2018-05-17T13%3A26%3A33.231516%2B03%3A00';
-var apiPrefix = 'https://public.api.openprocurement.org/api/2.4/tenders/';
+var startUri = _config2.default.startUri;
+var apiPrefix = _config2.default.prefix;
 
 process.on('uncaughtException', function (err) {
     _logger2.default.log('error', err.stack);
@@ -76,37 +91,15 @@ process.on('uncaughtException', function (err) {
     });
 });
 
-app.get('/', function (req, res) {
+app.get('/tenders', function (req, res) {
     db.listTenders({}, function (data) {
         res.send(data);
     });
-}).get('/start', function (req, res) {
-    console.log('Start');
-    db.getNextURI(function (uri) {
-        if (uri) {
-            goThrowTenders(uri);
-        } else {
-            goThrowTenders(startUri);
-        }
-    });
-    setTimeout(function () {
-        console.log('Wake and move!');
-        db.getNextURI(function (uri) {
-            if (uri) {
-                goThrowTenders(uri);
-            } else {
-                goThrowTenders(startUri);
-            }
-        });
-    }, 60000);
-
+}).get('/ping', function (req, res) {
     res.sendStatus(200);
-}).get('/update', function (req, res) {
-    db.listAllTenders(function (data) {
-        updateExistedTenders(data);
-    });
-    res.send('ok');
 });
+
+app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
 
 function goThrowTenders(uri) {
     console.log('uri - ', uri);
@@ -162,7 +155,7 @@ function analiseToTender(prefix, id, uri) {
                         try {
                             if (allInfo.value) {
                                 tender.amount = allInfo.value.amount;
-                                if (Number.parseInt(tender.amount, 10) > 5000000) {
+                                if (Number.parseInt(tender.amount, 10) > _config2.default.minAmount && Number.parseInt(tender.amount, 10) < _config2.default.maxAmount) {
                                     tender._id = allInfo.id;
                                     tender.name = allInfo.procuringEntity.name;
                                     if (allInfo.auctionPeriod) {
@@ -247,7 +240,7 @@ function analiseToTender(prefix, id, uri) {
                                         }
                                     }
                                     if (a === true) {
-                                        _logger2.default.log('info', 'a tender was found - ' + JSON.stringify(tender));
+                                        //logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
                                         /*   console.log(uri);
                                         /!*       console.log(tender);*!/*/
                                         db.createTender(tender);
@@ -279,11 +272,42 @@ app.listen(8080, function () {
     console.log('Server is running on 8080');
 });
 
-/*TODO:
-1. Reglament tasks
-2. Sorting
-3. Colors
-4. history
+/*cron.schedule('1-59 * * * * * ', function(){
+    console.log('sec 2');
+}, true);*/
 
-* */
+/*const task1Min =  cron.schedule('*!/1 * * * *', function(){
+    console.log('minute 1');
+}, false);*/
+
+var task5Min = _nodeCron2.default.schedule('*/5 * * * *', function () {
+    _logger2.default.log('info', '5MinTask started');
+    db.listAllTenders(function (data) {
+        updateExistedTenders(data);
+    });
+}, false);
+
+var task1Hour = _nodeCron2.default.schedule('* 1 * * *', function () {
+    _logger2.default.log('info', '1HourTask started');
+    db.getNextURI(function (uri) {
+        if (uri) {
+            goThrowTenders(uri);
+        } else {
+            goThrowTenders(startUri);
+        }
+    });
+    setTimeout(function () {
+        console.log('Wake and move!');
+        db.getNextURI(function (uri) {
+            if (uri) {
+                goThrowTenders(uri);
+            } else {
+                goThrowTenders(startUri);
+            }
+        });
+    }, 60000);
+}, false);
+
+task5Min.start();
+task1Hour.start();
 //# sourceMappingURL=app.js.map
