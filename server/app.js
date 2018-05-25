@@ -1,3 +1,6 @@
+import path from 'path';
+console.log(path(__dirname));
+console.log(path(__dirname, 'server'));
 /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -11,7 +14,7 @@ import logger from './utils/logger';
 import errorHandler from "./errorHandler";
 import config from "./config/config";
 import serve from 'express-static';
-import path from 'path';
+
 
 db.connect();
 const corsOptions = {
