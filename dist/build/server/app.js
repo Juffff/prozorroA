@@ -1,5 +1,9 @@
 'use strict';
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -20,37 +24,33 @@ var _nodeCron = require('node-cron');
 
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
-var _dbutils = require('./utils/dbutils');
+var _dbutils = require('./sever/utils/dbutils');
 
 var db = _interopRequireWildcard(_dbutils);
 
-var _item_id = require('./enums/item_id');
+var _item_id = require('./sever/enums/item_id');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 
-var _tender_status = require('./enums/tender_status');
+var _tender_status = require('./sever/enums/tender_status');
 
 var _tender_status2 = _interopRequireDefault(_tender_status);
 
-var _logger = require('./utils/logger');
+var _logger = require('./sever/utils/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _errorHandler = require('./errorHandler');
+var _errorHandler = require('./sever/errorHandler');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
-var _config = require('./config/config');
+var _config = require('./sever/config/config');
 
 var _config2 = _interopRequireDefault(_config);
 
 var _expressStatic = require('express-static');
 
 var _expressStatic2 = _interopRequireDefault(_expressStatic);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
 
 function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -68,8 +68,11 @@ function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
 
-db.connect(); /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
+console.log((0, _path2.default)(__dirname));
+console.log((0, _path2.default)(__dirname, 'server'));
+/*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 
+db.connect();
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
