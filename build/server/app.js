@@ -1,13 +1,8 @@
 'use strict';
+
 var _path = require('path');
+
 var _path2 = _interopRequireDefault(_path);
-
-
-console.log((0, _path2.default)(__dirname));
-console.log((0, _path2.default)(__dirname, 'server'));
-
-
-
 
 var _express = require('express');
 
@@ -29,27 +24,27 @@ var _nodeCron = require('node-cron');
 
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
-var _dbutils = require('./build/server/utils/dbutils');
+var _dbutils = require('./utils/dbutils');
 
 var db = _interopRequireWildcard(_dbutils);
 
-var _item_id = require('./build/server/enums/item_id');
+var _item_id = require('./enums/item_id');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 
-var _tender_status = require('./build/server/enums/tender_status');
+var _tender_status = require('./enums/tender_status');
 
 var _tender_status2 = _interopRequireDefault(_tender_status);
 
-var _logger = require('./build/server/utils/logger');
+var _logger = require('./utils/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _errorHandler = require('./build/server/errorHandler');
+var _errorHandler = require('./errorHandler');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
-var _config = require('./build/server/config/config');
+var _config = require('./config/config');
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -62,8 +57,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
-
-
 db.connect();
 var corsOptions = {
     origin: '*',

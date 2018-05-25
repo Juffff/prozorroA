@@ -1,55 +1,26 @@
-'use strict';
+import mongoose from 'mongoose';
+import config from '../config/config.js';
+import '../models/Tender';
+import '../models/NextURI';
+import errorHandler from '../errorHandler';
+import compareTenders from './tendersComparator';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.connect = connect;
-exports.createTender = createTender;
-exports.getTenderByID = getTenderByID;
-exports.listAllTenders = listAllTenders;
-exports.listTenders = listTenders;
-exports.setNextURI = setNextURI;
-exports.getNextURI = getNextURI;
+const Tender = mongoose.model('Tender');
+const NextURI = mongoose.model('NextURI');
 
-var _mongoose = require('mongoose');
 
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _config = require('../config/config.js');
-
-var _config2 = _interopRequireDefault(_config);
-
-require('../models/Tender');
-
-require('../models/NextURI');
-
-var _errorHandler = require('../errorHandler');
-
-var _errorHandler2 = _interopRequireDefault(_errorHandler);
-
-var _tendersComparator = require('./tendersComparator');
-
-var _tendersComparator2 = _interopRequireDefault(_tendersComparator);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var Tender = _mongoose2.default.model('Tender');
-var NextURI = _mongoose2.default.model('NextURI');
-
-function connect() {
-    var db = _config2.default.db;
-    _mongoose2.default.Promise = global.Promise;
+export function connect() {
+    const db = config.db;
+    mongoose.Promise = global.Promise;
     //mongoose.connect(`mongodb://${db.host}:${db.port}/${db.name}`, { useMongoClient: true });
-    _mongoose2.default.connect(db.user + ':' + db.password + '@' + db.host + ':' + db.port + '/' + db.name);
+    mongoose.connect(`${db.user}:${db.password}@${db.host}:${db.port}/${db.name}`);
     //mongoose.set('debug', true);
 }
 
-function createTender(tender) {
-    Tender.find({ _id: tender._id }).then(function (data) {
+export function createTender(tender) {
+    Tender.find({_id: tender._id}).then(data => {
         if (data.length === 0) {
-            var newTender = new Tender();
+            const newTender = new Tender;
             newTender._id = tender._id;
             newTender.name = tender.name;
             newTender.datePublished = tender.datePublished;
@@ -65,22 +36,22 @@ function createTender(tender) {
             newTender.status = tender.status;
             newTender.suppliers = tender.suppliers;
             newTender.createdAt = new Date(Date.now()).toLocaleDateString().toString();
-            var date = new Date(Date.now());
-            var day = date.toLocaleDateString();
-            var time = date.toLocaleTimeString();
+            const date = new Date(Date.now());
+            const day = date.toLocaleDateString();
+            const time = date.toLocaleTimeString();
             if (!tender.history) {
-                newTender.history = _defineProperty({}, day + ':' + time, 'Тендер добавлен в базу');
+                newTender.history = {[`${day}:${time}`]: 'Тендер добавлен в базу'};
             } else newTender.history = tender.history;
             newTender.save(function (err, doc) {
                 if (err) {
-                    (0, _errorHandler2.default)(err);
+                    errorHandler(err);
                 } else {
                     // console.log(doc);
                 }
             });
         } else {
-            Tender.findOne({ _id: tender._id }, function (err, doc) {
-                var newTender = updateTender(data[0], tender);
+            Tender.findOne({_id: tender._id}, function (err, doc) {
+                const newTender = updateTender(data[0], tender);
                 doc._id = newTender._id;
                 doc.name = newTender.name;
                 doc.datePublished = newTender.datePublished;
@@ -99,20 +70,22 @@ function createTender(tender) {
                 doc.history = newTender.history;
                 doc.save(function (err, newDoc) {
                     if (err) {
-                        (0, _errorHandler2.default)(err);
+                        errorHandler(err);
                     } else {
-                        console.log(newDoc);
+                         console.log(newDoc);
                     }
                 });
             });
+
+
         }
     });
 }
 
 function updateTender(oldTender, newTender) {
-    var compareResults = (0, _tendersComparator2.default)(oldTender, newTender);
+    const compareResults = compareTenders(oldTender, newTender);
     if (Object.keys(compareResults).length !== 0) {
-        var tNewTender = {};
+        const tNewTender = {};
         tNewTender._id = newTender._id;
         tNewTender.name = newTender.name;
         tNewTender.datePublished = newTender.datePublished;
@@ -128,56 +101,51 @@ function updateTender(oldTender, newTender) {
         tNewTender.status = newTender.status;
         tNewTender.suppliers = newTender.suppliers;
         tNewTender.createdAt = oldTender.createdAt;
-        var date = new Date(Date.now());
-        var day = date.toLocaleDateString();
-        var time = date.toLocaleTimeString();
-        tNewTender.history = Object.assign(oldTender.history, _defineProperty({}, day + ':' + time, compareResults));
+        const date = new Date(Date.now());
+        const day = date.toLocaleDateString();
+        const time = date.toLocaleTimeString();
+        tNewTender.history = Object.assign(oldTender.history, {[`${day}:${time}`]: compareResults});
         return tNewTender;
     } else return oldTender;
 }
 
-function getTenderByID(tender, callback) {
-    Tender.find({ _id: tender._id }).then(function (data) {
-        return callback(data[0]);
-    });
+export function getTenderByID(tender, callback) {
+    Tender.find({_id: tender._id}).then(data => callback(data[0]));
 }
 
-function listAllTenders(callback) {
-    return Tender.find({}).then(function (data) {
-        return callback(data);
-    });
+export function listAllTenders(callback) {
+    return Tender.find({}).then(data => callback(data));
 }
 
-function listTenders(tenderFilter, callback) {
-    Tender.find(tenderFilter).then(function (data) {
-        return callback(data);
-    });
+export function listTenders(tenderFilter, callback) {
+    Tender.find(tenderFilter).then(data => callback(data));
 }
 
-function setNextURI(URI) {
-    NextURI.findOne({ _id: 'nextURI' }, function (err, doc) {
+export function setNextURI(URI) {
+    NextURI.findOne({_id: 'nextURI'}, (err, doc) => {
         if (doc) {
             doc.nextURI = URI;
-            doc.save(function (err, doc) {
+            doc.save((err, doc) => {
                 if (err) {
-                    (0, _errorHandler2.default)(err);
+                    errorHandler(err);
                 }
             });
+
         } else {
-            var uri = new NextURI();
+            const uri = new NextURI;
             uri._id = 'nextURI';
             uri.nextURI = URI;
-            uri.save(function (err, doc) {
+            uri.save((err, doc) => {
                 if (err) {
-                    (0, _errorHandler2.default)(err);
+                    errorHandler(err);
                 }
             });
         }
-    });
+    })
 }
 
-function getNextURI(callback) {
-    NextURI.findOne({ _id: 'nextURI' }, function (err, doc) {
+export function getNextURI(callback) {
+    NextURI.findOne({_id: 'nextURI'}, (err, doc) => {
         if (doc) {
             callback(doc.nextURI);
         } else {
@@ -185,4 +153,3 @@ function getNextURI(callback) {
         }
     });
 }
-//# sourceMappingURL=dbUtils.js.map
