@@ -28,7 +28,7 @@ var _dbUtils = require('/app/build/utils/dbUtils.js');
 
 var db = _interopRequireWildcard(_dbUtils);
 
-var _item_id = require('/app/build/item_id.js');
+var _item_id = require('/app/build/enums/item_id.js');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 
@@ -144,7 +144,8 @@ app.get('/start', function (req, res) {
     res.sendStatus(200);
 });
 
-app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
+//app.use('/', serve(path.join(__dirname, '..', 'client')));
+app.use('/', (0, _expressStatic2.default)('/app/build/client'));
 
 function goThrowTenders(uri) {
     task1Hour.stop();

@@ -132,7 +132,8 @@ app.get('/start', function (req, res) {
     res.sendStatus(200);
 });
 
-app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
+//app.use('/', serve(path.join(__dirname, '..', 'client')));
+app.use('/', (0, _expressStatic2.default)('/app/build/client'));
 
 function goThrowTenders(uri) {
     task1Hour.stop();

@@ -8,7 +8,7 @@
     "cpapp": "cp app.js ./build",
     "cpserver": "cp -R ./server/ ./build",
     "cpclient": "cp -R ./client/ ./build/client",
-    "build-server":  "npm run clean && npm run cpserver && babel -d ./build/ ./server",
+    "build-server":  "npm run clean && npm run cpserver && babel -d ./build/ ./server && npm run cpclient",
     "build-server2": "npm run clean && babel -d ./build/ ./server && npm run cpclient",
     "devserver": "./node_modules/.bin/nodemon ./server/app.js --exec babel-node --presets es2015",
     "devserver2": "./node_modules/.bin/nodemon app.js --exec babel-node --presets es2015",
