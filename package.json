@@ -14,7 +14,7 @@
     "devserver2": "./node_modules/.bin/nodemon app.js --exec babel-node --presets es2015",
     "server": "babel-node ./server/app.js --exec babel-node --presets es2015",
     "serverRun": "node --inspect ./build/app.js",
-    "deploy": "git add .&&  git commit -m \"dpl\" && git push heroku master",
+    "deploy": "git add . &&  git commit -m \"dpl\" && git push heroku master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
