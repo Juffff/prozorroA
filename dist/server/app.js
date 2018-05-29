@@ -28,7 +28,7 @@ var _dbUtils = require('/app/build/utils/dbUtils.js');
 
 var db = _interopRequireWildcard(_dbUtils);
 
-var _item_id = require('/app/build/item_id.js');
+var _item_id = require('/app/build/enums/item_id.js');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 

@@ -15,7 +15,7 @@ import serve from 'express-static';*/
 
 import cron from 'node-cron';
 import * as db from '/app/build/utils/dbUtils.js';
-import itemIdEnum from '/app/build/item_id.js';
+import itemIdEnum from '/app/build/enums/item_id.js';
 import tenderStatusEnum from '/app/build/enums/tender_status.js';
 import logger from '/app/build/utils/logger.js';
 import errorHandler from "./errorHandler.js";
