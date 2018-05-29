@@ -101,8 +101,8 @@ app
         res.sendStatus(200);
     });
 
-//app.use('/', serve(path.join(__dirname, '..', 'client')));
-app.use('/', serve('/app/build/client'));
+app.use('/', serve(path.join(__dirname, '..', 'client')));
+//app.use('/', serve('/app/build/client'));
 
 function goThrowTenders(uri) {
     task1Hour.stop();
