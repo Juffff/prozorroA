@@ -1,24 +1,25 @@
 import path from 'path';
-console.log(path.resolve());
-console.log(__dirname);
-console.log(path.join(__dirname, 'utils', 'dbutils', 'js'));
-console.log(path.join(__dirname, 'utils', 'dbutils.js'));
-console.log(path.resolve(__dirname, 'utils', 'dbutils.js'));
-console.log(path.resolve('utils', 'dbutils.js'));
-/*
-import path from 'path';
-/!*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*!/
+/*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import got from 'got';
-import cron from 'node-cron';
+/*import cron from 'node-cron';
 import * as db from './utils/dbUtils.js';
 import itemIdEnum from './enums/item_id.js';
 import tenderStatusEnum from './enums/tender_status.js';
 import logger from './utils/logger.js';
 import errorHandler from "./errorHandler.js";
 import config from "./config/config.js";
+import serve from 'express-static';*/
+
+import cron from 'node-cron';
+import * as db from '/app/build/utils/dbUtils.js';
+import itemIdEnum from '/app/build/item_id.js';
+import tenderStatusEnum from '/app/build/enums/tender_status.js';
+import logger from '/app/build/utils/logger.js';
+import errorHandler from "./errorHandler.js";
+import config from "/app/build/config/config.js";
 import serve from 'express-static';
 
 
@@ -244,8 +245,8 @@ function analiseToTender(prefix, id, uri) {
                                     }
                                     if (a === true) {
                                         //logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
-                                        /!*   console.log(uri);
-                                    /!*       console.log(tender);*!/!*!/
+                                        /*   console.log(uri);
+                                    /!*       console.log(tender);*!/*/
                                         db.createTender(tender);
                                         a = false;
                                     }
@@ -275,9 +276,9 @@ function analiseToTender(prefix, id, uri) {
 
 }
 
-/!*app.listen(8080, () => {
+/*app.listen(8080, () => {
     console.log(`Server is running on 8080`);
-});*!/
+});*/
 
 app.listen(process.env.PORT || 8080, () => {
     if (process.env.PORT) {
@@ -288,22 +289,22 @@ app.listen(process.env.PORT || 8080, () => {
     }
 });
 
-/!*cron.schedule('1-59 * * * * * ', function(){
+/*cron.schedule('1-59 * * * * * ', function(){
     console.log('sec 2');
-}, true);*!/
+}, true);*/
 
-/!*const task1Min =  cron.schedule('*!/1 * * * *', function(){
+/*const task1Min =  cron.schedule('*!/1 * * * *', function(){
     console.log('minute 1');
-}, false);*!/
+}, false);*/
 
-const task5Min = cron.schedule('*!/5 * * * *', function () {
+const task5Min = cron.schedule('*/5 * * * *', function () {
     logger.log('info', '5MinTask started');
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
     });
 }, false);
 
-const task1Hour = cron.schedule('* *!/1 * * *', function () {
+const task1Hour = cron.schedule('* */1 * * *', function () {
     logger.log('info', '1HourTask started');
     db.getNextURI(function (uri) {
         if (uri) {
@@ -326,4 +327,4 @@ const task1Hour = cron.schedule('* *!/1 * * *', function () {
 }, false);
 
 task5Min.start();
-task1Hour.start();*/
+task1Hour.start();

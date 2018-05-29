@@ -9,7 +9,7 @@ function _interopRequireDefault(obj) {
 }
 
 console.log(_path2.default.resolve());
-console.logx(__dirname);
+console.log(__dirname);
 console.log(_path2.default.join(__dirname, 'utils', 'dbutils', 'js'));
 console.log(_path2.default.join(__dirname, 'utils', 'dbutils.js'));
 console.log(_path2.default.resolve(__dirname, 'utils', 'dbutils.js'));
