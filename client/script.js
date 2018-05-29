@@ -42,8 +42,8 @@ window.onload = () => {
     };
 
     function listReq(search, sort) {
-        const server = 'http://localhost:8080/tenders';
-        //const server = 'https://prozorroanalytics.herokuapp.com/';
+        //const server = 'http://localhost:8080/tenders';
+        const server = 'https://prozorroanalytics.herokuapp.com/tenders';
         fetch(server)
             .then(response => response.json())
             .then(json => {

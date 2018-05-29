@@ -46,8 +46,8 @@ window.onload = function () {
     };
 
     function listReq(search, sort) {
-        var server = 'http://localhost:8080/tenders';
-        //const server = 'https://prozorroanalytics.herokuapp.com/';
+        //const server = 'http://localhost:8080/tenders';
+        var server = 'https://prozorroanalytics.herokuapp.com/tenders';
         fetch(server).then(function (response) {
             return response.json();
         }).then(function (json) {
