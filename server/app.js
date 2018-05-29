@@ -5,12 +5,12 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import got from 'got';
 import cron from 'node-cron';
-import * as db from './utils/dbutils';
-import itemIdEnum from './enums/item_id';
-import tenderStatusEnum from './enums/tender_status';
-import logger from './utils/logger';
-import errorHandler from "./errorHandler";
-import config from "./config/config";
+import * as db from './utils/dbutils.js';
+import itemIdEnum from './enums/item_id.js';
+import tenderStatusEnum from './enums/tender_status.js';
+import logger from './utils/logger.js';
+import errorHandler from "./errorHandler.js";
+import config from "./config/config.js";
 import serve from 'express-static';
 
 
