@@ -7,9 +7,9 @@ exports.default = {
   apiPrefix: "http://localhost:8080",
   serverPort: "8080",
   db: {
-    /*name: "prozorroA",
-    host: "localhost",
-    port: "27017"*/
+    /* name: "prozorroA",
+     host: "localhost",
+     port: "27017"*/
     name: "heroku_8l8238dp",
     host: "ds135290.mlab.com",
     port: "35290",

@@ -2,7 +2,7 @@ export default {
   apiPrefix: "http://localhost:8080",
   serverPort: "8080",
   db: {
-    /*name: "prozorroA",
+   /* name: "prozorroA",
     host: "localhost",
     port: "27017"*/
       name: "heroku_8l8238dp",

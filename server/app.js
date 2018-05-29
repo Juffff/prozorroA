@@ -72,6 +72,16 @@ app
         goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
         res.send(200);
     })
+    .get('/update', (req, res) => {
+        db.listAllTenders(function (data) {
+            updateExistedTenders(data);
+        });
+        res.send(200);
+    })
+
+
+
+
     .get('/tenders', (req, res) => {
         db.listTenders({}, function (data) {
             res.send(data);

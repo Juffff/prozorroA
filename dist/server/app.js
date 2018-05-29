@@ -110,6 +110,11 @@ app.get('/start', function (req, res) {
 }).get('/start2018', function (req, res) {
     goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
     res.send(200);
+}).get('/update', function (req, res) {
+    db.listAllTenders(function (data) {
+        updateExistedTenders(data);
+    });
+    res.send(200);
 }).get('/tenders', function (req, res) {
     db.listTenders({}, function (data) {
         res.send(data);
