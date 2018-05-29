@@ -24,9 +24,11 @@ var _nodeCron = require('node-cron');
 
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
-var _dbutils = require('./utils/dbutils.js');
+var _dbUtils2 = require('./build/utils/dbUtils.js');
 
-var db = _interopRequireWildcard(_dbutils);
+var _dbUtils = require('./utils/dbUtils.js');
+
+var db = _interopRequireWildcard(_dbUtils);
 
 var _item_id = require('./enums/item_id.js');
 

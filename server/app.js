@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import got from 'got';
 import cron from 'node-cron';
-import * as db from './utils/dbutils.js';
+import * as db from './utils/dbUtils.js';
 import itemIdEnum from './enums/item_id.js';
 import tenderStatusEnum from './enums/tender_status.js';
 import logger from './utils/logger.js';

@@ -5,13 +5,15 @@
   "main": "server/app.js",
   "scripts": {
     "clean": "rm -rf build && mkdir build",
+    "cpapp": "cp app.js ./build",
     "cpserver": "cp -R ./server/ ./build",
     "cpclient": "cp -R ./client/ ./build/client",
-    "build-server":  "npm run clean && npm run cpserver && babel -d ./build/ ./server && npm run cpclient",
+    "build-server":  "npm run clean && npm run cpserver && babel -d ./build/ ./server",
     "build-server2": "npm run clean && babel -d ./build/ ./server && npm run cpclient",
     "devserver": "./node_modules/.bin/nodemon ./server/app.js --exec babel-node --presets es2015",
+    "devserver2": "./node_modules/.bin/nodemon app.js --exec babel-node --presets es2015",
     "server": "babel-node ./server/app.js --exec babel-node --presets es2015",
-    "serverRun": "node ./build/app.js",
+    "serverRun": "node --debug ./build/app.js",
     "deploy": "git add .&&  git commit -m \"dpl\" && git push heroku master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
