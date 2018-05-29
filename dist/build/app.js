@@ -25,8 +25,6 @@ var _nodeCron = require('node-cron');
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
 try {
-    var _dbUtils2 = require('./build/utils/dbUtils.js');
-    var _dbUtils = require('./utils/dbUtils.js');
     var _dbUtils = require('/utils/dbUtils.js');
     var _dbUtils = require('utils/dbUtils.js');
     var _dbUtils = require('build/utils/dbUtils.js');
