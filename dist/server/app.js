@@ -330,3 +330,4 @@ const task1Hour = cron.schedule('* *!/1 * * *', function () {
 
 task5Min.start();
 task1Hour.start();*/
+//# sourceMappingURL=app.js.map

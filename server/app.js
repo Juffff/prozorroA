@@ -1,5 +1,9 @@
 import path from 'path';
-/*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
+console.log(path.resolve());
+console.log(__dirname);
+/*
+import path from 'path';
+/!*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*!/
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -236,8 +240,8 @@ function analiseToTender(prefix, id, uri) {
                                     }
                                     if (a === true) {
                                         //logger.log('info', `a tender was found - ${JSON.stringify(tender)}`);
-                                        /*   console.log(uri);
-                                    /!*       console.log(tender);*!/*/
+                                        /!*   console.log(uri);
+                                    /!*       console.log(tender);*!/!*!/
                                         db.createTender(tender);
                                         a = false;
                                     }
@@ -267,9 +271,9 @@ function analiseToTender(prefix, id, uri) {
 
 }
 
-/*app.listen(8080, () => {
+/!*app.listen(8080, () => {
     console.log(`Server is running on 8080`);
-});*/
+});*!/
 
 app.listen(process.env.PORT || 8080, () => {
     if (process.env.PORT) {
@@ -280,22 +284,22 @@ app.listen(process.env.PORT || 8080, () => {
     }
 });
 
-/*cron.schedule('1-59 * * * * * ', function(){
+/!*cron.schedule('1-59 * * * * * ', function(){
     console.log('sec 2');
-}, true);*/
+}, true);*!/
 
-/*const task1Min =  cron.schedule('*!/1 * * * *', function(){
+/!*const task1Min =  cron.schedule('*!/1 * * * *', function(){
     console.log('minute 1');
-}, false);*/
+}, false);*!/
 
-const task5Min = cron.schedule('*/5 * * * *', function () {
+const task5Min = cron.schedule('*!/5 * * * *', function () {
     logger.log('info', '5MinTask started');
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
     });
 }, false);
 
-const task1Hour = cron.schedule('* */1 * * *', function () {
+const task1Hour = cron.schedule('* *!/1 * * *', function () {
     logger.log('info', '1HourTask started');
     db.getNextURI(function (uri) {
         if (uri) {
@@ -318,4 +322,4 @@ const task1Hour = cron.schedule('* */1 * * *', function () {
 }, false);
 
 task5Min.start();
-task1Hour.start();
+task1Hour.start();*/
