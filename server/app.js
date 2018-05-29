@@ -1,6 +1,10 @@
 import path from 'path';
 console.log(path.resolve());
-console.log(__dirname);
+console.logx(__dirname);
+console.log(path.join(__dirname, 'utils', 'dbutils', 'js'));
+console.log(path.join(__dirname, 'utils', 'dbutils.js'));
+console.log(path.resolve(__dirname, 'utils', 'dbutils.js'));
+console.log(path.resolve('utils', 'dbutils.js'));
 /*
 import path from 'path';
 /!*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*!/
