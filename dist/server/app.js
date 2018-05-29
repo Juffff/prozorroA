@@ -7,7 +7,7 @@ var _path2 = _interopRequireDefault(_path);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 console.log(_path2.default.resolve());
-console.logx(__dirname);
+console.log(__dirname);
 console.log(_path2.default.join(__dirname, 'utils', 'dbutils', 'js'));
 console.log(_path2.default.join(__dirname, 'utils', 'dbutils.js'));
 console.log(_path2.default.resolve(__dirname, 'utils', 'dbutils.js'));

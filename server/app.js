@@ -1,6 +1,6 @@
 import path from 'path';
 console.log(path.resolve());
-console.logx(__dirname);
+console.log(__dirname);
 console.log(path.join(__dirname, 'utils', 'dbutils', 'js'));
 console.log(path.join(__dirname, 'utils', 'dbutils.js'));
 console.log(path.resolve(__dirname, 'utils', 'dbutils.js'));
