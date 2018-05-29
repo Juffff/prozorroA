@@ -24,19 +24,19 @@ var _nodeCron = require('node-cron');
 
 var _nodeCron2 = _interopRequireDefault(_nodeCron);
 
-var _dbUtils = require('/app/build/utils/dbUtils.js');
+var _dbUtils = require('./utils/dbUtils.js');
 
 var db = _interopRequireWildcard(_dbUtils);
 
-var _item_id = require('/app/build/enums/item_id.js');
+var _item_id = require('./enums/item_id.js');
 
 var _item_id2 = _interopRequireDefault(_item_id);
 
-var _tender_status = require('/app/build/enums/tender_status.js');
+var _tender_status = require('./enums/tender_status.js');
 
 var _tender_status2 = _interopRequireDefault(_tender_status);
 
-var _logger = require('/app/build/utils/logger.js');
+var _logger = require('./utils/logger.js');
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -44,7 +44,7 @@ var _errorHandler = require('./errorHandler.js');
 
 var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
-var _config = require('/app/build/config/config.js');
+var _config = require('./config/config.js');
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -57,12 +57,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*import cron from 'node-cron';
-import * as db from './utils/dbUtils.js';
-import itemIdEnum from './enums/item_id.js';
-import tenderStatusEnum from './enums/tender_status.js';
-import logger from './utils/logger.js';
+import * as db from '/app/build/utils/dbUtils.js';
+import itemIdEnum from '/app/build/enums/item_id.js';
+import tenderStatusEnum from '/app/build/enums/tender_status.js';
+import logger from '/app/build/utils/logger.js';
 import errorHandler from "./errorHandler.js";
-import config from "./config/config.js";
+import config from "/app/build/config/config.js";
 import serve from 'express-static';*/
 
 /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/

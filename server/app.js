@@ -4,23 +4,23 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import got from 'got';
-/*import cron from 'node-cron';
+import cron from 'node-cron';
 import * as db from './utils/dbUtils.js';
 import itemIdEnum from './enums/item_id.js';
 import tenderStatusEnum from './enums/tender_status.js';
 import logger from './utils/logger.js';
 import errorHandler from "./errorHandler.js";
 import config from "./config/config.js";
-import serve from 'express-static';*/
+import serve from 'express-static';
 
-import cron from 'node-cron';
+/*import cron from 'node-cron';
 import * as db from '/app/build/utils/dbUtils.js';
 import itemIdEnum from '/app/build/enums/item_id.js';
 import tenderStatusEnum from '/app/build/enums/tender_status.js';
 import logger from '/app/build/utils/logger.js';
 import errorHandler from "./errorHandler.js";
 import config from "/app/build/config/config.js";
-import serve from 'express-static';
+import serve from 'express-static';*/
 
 
 db.connect();
