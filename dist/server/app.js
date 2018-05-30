@@ -341,11 +341,7 @@ var task5Min = _nodeCron2.default.schedule('*/5 * * * *', function () {
 var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
     _logger2.default.log('info', '1HourTask started');
     db.getNextURI(function (uri) {
-        if (uri) {
-            goThrowTenders(uri);
-        } else {
-            goThrowTenders(startUri);
-        }
+        goThrowTenders(startUri);
     });
     setTimeout(function () {
         console.log('Wake and move!');

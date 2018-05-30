@@ -362,12 +362,7 @@ var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
     setTimeout(function () {
         console.log('Wake and move!');
         db.getNextURI(function (uri) {
-            var dateArray = new Date().toLocaleString(['ban', 'id']).split(' ')[0].split('/').reverse();
-            if (dateArray[2]) {
-                dateArray[2] = Number.parseInt(dateArray[2]) - 1;
-            }
-            var yesterday = dateArray.join('-');
-            goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=' + yesterday);
+            goThrowTenders(startUri);
         });
     }, 60000);
 }, false);

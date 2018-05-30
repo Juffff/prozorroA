@@ -314,11 +314,7 @@ const task5Min = cron.schedule('*/5 * * * *', function () {
 const task1Hour = cron.schedule('* */1 * * *', function () {
     logger.log('info', '1HourTask started');
     db.getNextURI(function (uri) {
-        if (uri) {
-            goThrowTenders(uri);
-        } else {
-            goThrowTenders(startUri);
-        }
+        goThrowTenders(startUri);
     });
     setTimeout(function () {
         console.log('Wake and move!');
