@@ -106,6 +106,18 @@ app
 
     .get('/ping', (req, res) => {
         res.sendStatus(200);
+    })
+
+    .get('/stopall', (req, res) => {
+        task5Min.stop();
+        task1Hour.stop();
+        res.send(200);
+    })
+
+    .get('/startall', (req, res) => {
+        task5Min.start();
+        task1Hour.start();
+        res.send(200);
     });
 
 app.use('/', serve(path.join(__dirname, '..', 'client')));
