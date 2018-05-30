@@ -27,3 +27,4 @@ exports.default = {
   minAmount: 5000000,
   maxAmount: 10000000000
 };
+//# sourceMappingURL=config.js.map

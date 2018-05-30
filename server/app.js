@@ -323,13 +323,7 @@ const task1Hour = cron.schedule('* */1 * * *', function () {
     setTimeout(function () {
         console.log('Wake and move!');
         db.getNextURI(function (uri) {
-            let dateArray = new Date().toLocaleString(['ban', 'id']).split(' ')[0].split('/').reverse();
-            if (dateArray[2]) {
-                dateArray[2] = Number.parseInt(dateArray[2]) - 1;
-            }
-            const yesterday = dateArray.join('-');
-            goThrowTenders(`https://public.api.openprocurement.org/api/2.4/tenders?offset=${yesterday}`);
-
+            goThrowTenders(startUri);
         });
     }, 60000);
 
