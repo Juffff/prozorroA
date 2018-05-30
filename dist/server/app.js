@@ -66,7 +66,10 @@ import config from "/app/build/config/config.js";
 import serve from 'express-static';*/
 
 /*console.log(JSON.parse(document.getElementsByTagName('pre')[0].innerHTML))*/
-db.connect();
+db.connect(); //heroku config:set NODE_PATH=./lib
+//exports NODE_PATH=$NODE_PATH:./lib
+
+
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -119,6 +122,9 @@ app.get('/start', function (req, res) {
 }).get('/start2018', function (req, res) {
     goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2018');
     res.send(200);
+}).get('/start2017', function (req, res) {
+    goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=2017');
+    res.send(200);
 }).get('/update', function (req, res) {
     db.listAllTenders(function (data) {
         updateExistedTenders(data);
@@ -133,11 +139,11 @@ app.get('/start', function (req, res) {
 });
 
 app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
+
 //app.use('/', serve('/app/build/client'));
 
 function goThrowTenders(uri) {
     task1Hour.stop();
-    task5Min.stop();
     console.log('uri - ', uri);
     var milliseconds = null;
 
@@ -158,7 +164,6 @@ function goThrowTenders(uri) {
                 console.log('Go throw tenders finished.');
                 db.setNextURI(startUri);
                 task1Hour.start();
-                task5Min.start();
             } else {
                 resJson.data.map(function (data) {
                     return data.id;
@@ -345,11 +350,12 @@ var task1Hour = _nodeCron2.default.schedule('* */1 * * *', function () {
     setTimeout(function () {
         console.log('Wake and move!');
         db.getNextURI(function (uri) {
-            if (uri) {
-                goThrowTenders(uri);
-            } else {
-                goThrowTenders(startUri);
+            var dateArray = new Date().toLocaleString(['ban', 'id']).split(' ')[0].split('/').reverse();
+            if (dateArray[2]) {
+                dateArray[2] = Number.parseInt(dateArray[2]) - 1;
             }
+            var yesterday = dateArray.join('-');
+            goThrowTenders('https://public.api.openprocurement.org/api/2.4/tenders?offset=' + yesterday);
         });
     }, 60000);
 }, false);
