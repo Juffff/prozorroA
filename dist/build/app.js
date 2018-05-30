@@ -148,6 +148,14 @@ app.get('/start', function (req, res) {
     });
 }).get('/ping', function (req, res) {
     res.sendStatus(200);
+}).get('/stopall', function (req, res) {
+    task5Min.stop();
+    task1Hour.stop();
+    res.send(200);
+}).get('/startall', function (req, res) {
+    task5Min.start();
+    task1Hour.start();
+    res.send(200);
 });
 
 app.use('/', (0, _expressStatic2.default)(_path2.default.join(__dirname, '..', 'client')));
