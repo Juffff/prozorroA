@@ -28,6 +28,7 @@ window.onload = () => {
     const clearSearchInput = document.getElementById('clearSearchButton');
     const amountTh = document.getElementById('amountTh');
     const pDate = document.getElementById('pDate');
+    const aDate = document.getElementById('aDate');
 
     $("#btnExport").click(function (e) {
         $(this).attr({
@@ -75,6 +76,12 @@ window.onload = () => {
         });
     });
 
+    aDate.addEventListener('click', function () {
+        sortTenderList(sortByAuctionDate, function (data) {
+            drawTable(searchInTenderList(data, searchInput.value));
+        });
+    });
+
     clearSearchInput.onclick = function () {
         searchInput.value = '';
         sortTenderList(sortByAmount, function (data) {
@@ -104,14 +111,27 @@ window.onload = () => {
         if (data) {
             if (Array.isArray(data)) {
                 data.forEach(el => {
-                    if (Object.values(el).join('').toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                    /* if (Object.values(el).join('').toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                         arr.push(el);
+                     }*/
+                    String.prototype.replaceAll = function (target, replacement) {
+                        return this.split(target).join(replacement);
+                    };
+                    const str = JSON.stringify(Object.values(el)).toLowerCase().replaceAll(' ', '').replaceAll('\"', '').toString();
+                          const searchStr = JSON.stringify(search).toLowerCase().replaceAll(' ', '').replaceAll('\"', '').toString();
+                    if (search.length === 0) {
                         arr.push(el);
+                    } else {
+                        if (str.indexOf(searchStr) !== -1) {
+                            arr.push(el)
+                        }
                     }
                 });
             }
         }
         return arr;
     }
+
 
     function drawTable(data) {
         clearTable();
@@ -129,6 +149,26 @@ window.onload = () => {
         return dataToBeSorted.sort((a, b) => {
             let data1 = new Date(a.datePublished);
             let data2 = new Date(b.datePublished);
+            if (data1 < data2) {
+                return 1;
+            }
+            if (data1 > data2) {
+                return -1;
+            }
+            return 0;
+        });
+    }
+    
+    function sortByAuctionDate(data) {
+        const dataToBeSorted = data.map(el => {
+            if (el.startDate === undefined) {
+                el.startDate = null;
+                return el;
+            } else return el;
+        });
+        return dataToBeSorted.sort((a, b) => {
+            let data1 = new Date(a.startDate);
+            let data2 = new Date(b.startDate);
             if (data1 < data2) {
                 return 1;
             }
