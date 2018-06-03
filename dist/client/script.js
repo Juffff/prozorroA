@@ -3,6 +3,28 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 window.onload = function () {
+    var tendersData = undefined;
+    var sortedTendersData = undefined;
+
+    getList(function (data) {
+        if (data) {
+            tendersData = data;
+        }
+    });
+
+    function getList(callback) {
+        // const server = 'http://localhost:8080/tenders';
+        var server = 'https://prozorroanalytics.herokuapp.com/tenders';
+        fetch(server).then(function (response) {
+            return response.json();
+        }).then(function (json) {
+            callback(json);
+        }).catch(console.log);
+    }
+
+    function clearTable() {
+        document.getElementById('tBody').innerHTML = '';
+    }
 
     var searchButton = document.getElementById('searchButton');
     var searchInput = document.getElementById('searchInput');
@@ -13,8 +35,21 @@ window.onload = function () {
     $("#btnExport").click(function (e) {
         $(this).attr({
             'download': 'ProzorroAnalytics_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString() + '.xls',
-            'href': 'data:application/csv;charset=utf-8,' + encodeURIComponent($('#dvData').html())
+            'href': 'data:application/xls;charset=utf-8,' + encodeURIComponent($('#dvData').html())
         });
+        /*$.ajax({
+            url: 'data:' + encodeURIComponent($('#dvData').html()),
+            dataType: "application/octet-stream",
+            success: function(data){
+                $("#btnExport").attr({
+                    "value": "Download",
+                    "href": URL.createObjectURL(new Blob([data], {
+                        type: "application/octet-stream"
+                    })),
+                    "download": "outputFile.xls"
+                });
+            }
+        });*/
     });
 
     searchInput.addEventListener("keyup", function (event) {
@@ -24,44 +59,67 @@ window.onload = function () {
         }
     });
 
-    searchButton.onclick = function () {
-        document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value, sortByAmount);
-    };
+    searchButton.addEventListener('click', function () {
+        sortTenderList(sortByAmount, function (data) {
+            drawTable(searchInTenderList(data, searchInput.value));
+        });
+    });
 
     amountTh.addEventListener('click', function () {
-        document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value, sortByAmount);
+        sortTenderList(sortByAmount, function (data) {
+            drawTable(searchInTenderList(data, searchInput.value));
+        });
     });
 
     pDate.addEventListener('click', function () {
-        document.getElementById('tBody').innerHTML = '';
-        listReq(searchInput.value, sortByDatePublished);
+        sortTenderList(sortByDatePublished, function (data) {
+            drawTable(searchInTenderList(data, searchInput.value));
+        });
     });
 
     clearSearchInput.onclick = function () {
         searchInput.value = '';
-        document.getElementById('tBody').innerHTML = '';
-        listReq('', sortByAmount);
+        sortTenderList(sortByAmount, function (data) {
+            drawTable(searchInTenderList(data, searchInput.value));
+        });
     };
 
-    function listReq(search, sort) {
-        //const server = 'http://localhost:8080/tenders';
-        var server = 'https://prozorroanalytics.herokuapp.com/tenders';
-        fetch(server).then(function (response) {
-            return response.json();
-        }).then(function (json) {
+    function sortTenderList(sort, callback) {
+        if (tendersData) {
             if (typeof sort === 'function') {
-                return sort(json);
-            } else return sortByAmount(json);
-        }).then(function (json) {
-            var tBody = document.getElementById('tBody');
-            json.forEach(function (el) {
-                if (Object.values(el).join('').toLowerCase().indexOf(search.toLowerCase()) !== -1) {
-                    createTr(el, tBody);
-                }
-            });
-        }).catch(console.log);
+                sortedTendersData = sort(tendersData);
+                callback(sortedTendersData);
+            } else {
+                sortedTendersData = sortByAmount(sortedTendersData);
+                callback(sortedTendersData);
+            }
+        } else getList(function (data) {
+            if (data) {
+                sortTenderList(sort, callback);
+            }
+        });
+    }
+
+    function searchInTenderList(data, search) {
+        var arr = [];
+        if (data) {
+            if (Array.isArray(data)) {
+                data.forEach(function (el) {
+                    if (Object.values(el).join('').toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                        arr.push(el);
+                    }
+                });
+            }
+        }
+        return arr;
+    }
+
+    function drawTable(data) {
+        clearTable();
+        var tBody = document.getElementById('tBody');
+        data.forEach(function (el) {
+            return createTr(el, tBody);
+        });
     }
 
     function sortByDatePublished(data) {
@@ -113,11 +171,10 @@ window.onload = function () {
             el.style.cssText = cssText;
         }
         if (!data) el.innerHTML = '';else el.innerHTML = data;
-        el.ondblclick = function () {
+        el.addEventListener('dblclick', function () {
             searchInput.value = el.innerHTML;
-            document.getElementById('tBody').innerHTML = '';
-            listReq(searchInput.value);
-        };
+            searchButton.click();
+        });
         return el;
     };
 
@@ -129,11 +186,10 @@ window.onload = function () {
             data.forEach(function (el) {
                 var li = document.createElement('li');
                 li.innerHTML = el;
-                li.ondblclick = function () {
+                li.addEventListener('dblclick', function () {
                     searchInput.value = li.innerHTML;
-                    document.getElementById('tBody').innerHTML = '';
-                    listReq(searchInput.value);
-                };
+                    searchButton.click();
+                });
                 ul.appendChild(li);
             });
             td.appendChild(ul);
